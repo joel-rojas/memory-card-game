@@ -22,6 +22,7 @@ export interface MCGameLevel {
 
 export type MCGameCard = {
   id: string;
+  uid: string;
   isHidden: boolean;
   isMatched: boolean;
 };
