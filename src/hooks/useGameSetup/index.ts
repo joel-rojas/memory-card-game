@@ -1,2 +1,2 @@
-export * from './useGameSetup';
-export * from './useGameSetup.test';
+export { default } from "./useGameSetup";
+export * from "./useGameSetup.test";
