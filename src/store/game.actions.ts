@@ -1,6 +1,7 @@
-import { MCGameCard } from "@config";
+import { MCGameCard, MCGameCardDeck } from "@config";
 
 export enum MCGameActionType {
+  START_DECK = "Start Deck",
   MATCHED_CARDS = "Matched Cards",
   SHOW_CARD = "Show Card",
   RESET_DECK = "Reset Deck",
@@ -11,4 +12,4 @@ export type MCGameAction = {
   payload: MCGameActionPayload;
 };
 
-export type MCGameActionPayload = MCGameCard;
+export type MCGameActionPayload = MCGameCard | MCGameCardDeck;

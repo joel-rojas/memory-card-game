@@ -93,6 +93,13 @@ export function gameReducer(
   action: MCGameAction
 ): MCGameState {
   switch (action.type) {
+    case MCGameActionType.START_DECK: {
+      const cardDeck = action.payload as MCGameCardDeck;
+      return {
+        ...state,
+        cardDeck: shuffleDeck(cardDeck),
+      };
+    }
     case MCGameActionType.MATCHED_CARDS: {
       const [firstCard, secondCard] = filterShownCards(state.cardDeck);
       if (firstCard && secondCard) {
