@@ -8,8 +8,8 @@ const useGameSetup = () => {
   const { cardDeck } = state;
 
   const getRandomCharCode = () => {
-    const MAX_AVAILABLE_CARDS = 15;
-    const INITIAL_CHAR_CODE = 97;
+    const MAX_AVAILABLE_CARDS = 16;
+    const INITIAL_CHAR_CODE = 96;
     return (
       INITIAL_CHAR_CODE + Math.floor(Math.random() * MAX_AVAILABLE_CARDS + 1)
     );
