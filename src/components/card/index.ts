@@ -1,2 +1,2 @@
-export * from './card.component';
-export * from './card.test';
+export { default } from "./card.component";
+export * from "./card.test";

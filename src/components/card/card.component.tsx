@@ -1,5 +1,17 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from "react";
 
-export default function Card() {
-  return <div></div>;
+interface CardProps {
+  src: string;
 }
+
+const Card: React.FC<CardProps> = ({ src }) => {
+  return (
+    <img
+      src={require(`@assets/${src}.png`)}
+      loading="lazy"
+    />
+  );
+};
+
+export default Card;
