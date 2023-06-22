@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": false,
     "baseUrl": ".",
     "paths": {
       "*": ["src/*"],
