@@ -1,14 +1,11 @@
-import React, { useReducer, ReactNode } from "react";
+import React, { useReducer } from "react";
 
-import { AppContext } from "@contexts";
+import { AppContext } from "@contexts/app-context";
 import { appReducer, initialState } from "@store";
+import { MCSingleComponentProps } from "@config";
 
-type AppProviderProps = {
-  children: ReactNode;
-};
-
-const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(appReducer, {...initialState});
+const AppProvider: React.FC<MCSingleComponentProps> = ({ children }) => {
+  const [state, dispatch] = useReducer(appReducer, { ...initialState });
   return (
     <AppContext.Provider value={{ state, dispatch }}>
       {children}

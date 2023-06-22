@@ -1,5 +1,16 @@
 import React from "react";
 
-export default function Home() {
-  return <div>HELLO</div>;
+interface HomeProps {
+  children: React.ReactNode;
 }
+
+const Home: React.FC<HomeProps> = ({ children }) => {
+  return (
+    <div>
+      <h1>Home</h1>
+      {children}
+    </div>
+  );
+};
+
+export default Home;
