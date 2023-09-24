@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function Badge() {
+export default function Header() {
   return <div></div>;
 }
