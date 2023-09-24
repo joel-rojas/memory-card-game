@@ -1,11 +1,16 @@
 import * as React from "react";
-import { useGameContext } from "@contexts";
+import { useAppContext, useGameContext } from "@contexts";
 import { MCGameCardDeck, MCGameCard } from "@config";
-import { MCGameActionType } from "@store";
+import { MCActionType, MCGameActionType } from "@store";
 
 const useGameSetup = () => {
   const { state, dispatch } = useGameContext();
+  const { state: appState, dispatch: appDispatch } = useAppContext();
+  const [countdown, setCountdown] = React.useState<number>(
+    appState.gameLevel.countdown
+  );
   const { cardDeck } = state;
+  const MAX_CARDS_SHOWN_PER_TURN = 2;
 
   const getRandomCharCode = () => {
     const MAX_AVAILABLE_CARDS = 16;
@@ -46,11 +51,68 @@ const useGameSetup = () => {
     return list as T;
   };
 
+  const handleCardOnClick = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    card: MCGameCard
+  ): void => {
+    dispatch({
+      type: MCGameActionType.SHOW_CARD,
+      payload: card,
+    });
+  };
+
+  // TODO: Refactor this side effect to generate deck once a game is started
   React.useLayoutEffect(() => {
     cardDeck.length === 0 &&
       dispatch({ type: MCGameActionType.START_DECK, payload: generateDeck() });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardDeck]);
+
+  // Check game status at the start of the game
+  React.useEffect(() => {
+    appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "inProgress" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Init and process game countdown timer
+  React.useEffect(() => {
+    if (countdown < 0) {
+      return;
+    }
+    const timerId = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+    return () => {
+      clearInterval(timerId);
+    };
+  }, [countdown]);
+
+  // Check game status on every shown card and countdown value change
+  React.useEffect(() => {
+    appDispatch({
+      type: MCActionType.CHECK_STATUS,
+      payload: { cardDeck, countdown },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardDeck, countdown]);
+
+  // Check if a pair of cards shown are matched
+  React.useEffect(() => {
+    if (state.cardsShown.counter === MAX_CARDS_SHOWN_PER_TURN) {
+      dispatch({ type: MCGameActionType.MATCHED_CARDS });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.cardsShown.counter]);
+
+  // TODO: Temporary log to check game status
+  React.useEffect(() => {
+    console.log("GAME STATUS", appState.gameStatus);
+  }, [appState]);
+
+  return {
+    state,
+    handleCardOnClick,
+  };
 };
 
 export default useGameSetup;

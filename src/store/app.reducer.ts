@@ -2,26 +2,25 @@ import { MCActionType, MCAppAction, MCAppActionCustomPayload1 } from "@store";
 import { MCGameStatus, MCAppState, MCGameCardDeck, MCGameLevel } from "@config";
 
 export const initialState: MCAppState = {
-  gameLevel: { label: "easy", countdown: 45 },
+  gameLevel: { label: "easy", countdown: 15 },
   gameStatus: "idle",
-  currentCountdown: 0,
 };
 
-function determineCardListMatches(cardList: MCGameCardDeck): boolean {
-  return cardList.every((card) => card.isMatched);
+function determineCardListMatches(cardDeck: MCGameCardDeck): boolean {
+  return cardDeck.every((card) => card.isMatched);
 }
 
 function determineGameStatus(
   status: MCGameStatus,
-  cardList: MCGameCardDeck,
-  countdown: number
+  cardDeck: MCGameCardDeck,
+  currentCountdown: number
 ): MCGameStatus {
   if (status === "inProgress") {
-    const allCardsMatched = determineCardListMatches(cardList);
-    if (countdown > 0 && allCardsMatched) {
+    const allCardsMatched = determineCardListMatches(cardDeck);
+    if (currentCountdown > 0 && allCardsMatched) {
       return "win";
     }
-    if (countdown <= 0 && !allCardsMatched) {
+    if (currentCountdown <= 0 && !allCardsMatched) {
       return "lose";
     }
     return "inProgress";

@@ -1,24 +1,19 @@
 import React from "react";
-import { useGameContext } from "@contexts";
-import useGameSetup from "@hooks/useGameSetup";
 
-const Card = React.lazy(() => import("@components/card"));
+import { Card, Body, Board } from "@components";
+import { useGameSetup } from "@hooks";
 
 export default function Play() {
-  const { state } = useGameContext();
-  useGameSetup();
+  const { state, handleCardOnClick } = useGameSetup();
   return (
-    <div>
-      <h1>Play</h1>
-      <React.Suspense fallback={<p>Loading</p>}>
+    <Body>
+      <Board>
         {state.cardDeck.map((card) => {
           return (
-            <div key={card.uid}>
-              <Card src={card.id} />
-            </div>
+            <Card key={card.uid} card={card} onTap={handleCardOnClick} />
           );
         })}
-      </React.Suspense>
-    </div>
+      </Board>
+    </Body>
   );
 }

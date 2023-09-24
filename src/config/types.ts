@@ -5,7 +5,6 @@ export interface MCSingleComponentProps {
 export interface MCAppState {
   gameLevel: MCGameLevel;
   gameStatus: MCGameStatus;
-  currentCountdown: number;
 }
 
 export interface MCGameState {
@@ -13,7 +12,14 @@ export interface MCGameState {
   cardsShown: MCGameCardsShown;
 }
 
-export type MCGameCardsShown = 2 | 1 | 0;
+export type MCGameCardsShown = {
+  counter: 2 | 1 | 0;
+  selectedCards: MCGameSelectedCards | null;
+};
+
+export type MCGameSelectedCards = {
+  [key: MCGameCard["uid"]]: MCGameCard;
+};
 
 export interface MCGameLevel {
   label: "easy" | "normal" | "hard";

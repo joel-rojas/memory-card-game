@@ -2,13 +2,17 @@ import { MCGameActionType, MCGameAction } from "@store";
 import {
   MCGameCardDeck,
   MCGameCard,
-  MCGameCardsShown,
   MCGameState,
+  MCGameSelectedCards,
+  MCGameCardsShown,
 } from "@config";
 
 export const gameInitialState: MCGameState = {
   cardDeck: [],
-  cardsShown: 0,
+  cardsShown: {
+    counter: 0,
+    selectedCards: null,
+  },
 };
 
 function shuffleDeck<T extends MCGameCardDeck>(cardDeck: T): T {
@@ -19,18 +23,6 @@ function shuffleDeck<T extends MCGameCardDeck>(cardDeck: T): T {
   }
   return cardDeck as T;
 }
-
-function filterShownCards<T extends MCGameCardDeck>(
-  cardDeck: T
-): Required<T> | [] {
-  const filteredCards = cardDeck.filter((card) => !card.isHidden);
-  if (filteredCards.length > 0) {
-    const [first, second] = filteredCards;
-    return [first, second] as Required<T>;
-  }
-  return [];
-}
-
 function changeCardHiddenStatus({
   list,
   cards,
@@ -40,9 +32,12 @@ function changeCardHiddenStatus({
   cards: { currentCard: MCGameCard; previousCard?: MCGameCard };
   isHidden: boolean;
 }): MCGameCardDeck {
+  const { currentCard, previousCard } = cards;
   return list.map((card) => {
-    const { currentCard, previousCard } = cards;
-    if (currentCard.id === card.id || previousCard?.id === card.id) {
+    if (
+      card.id === currentCard.id ||
+      (previousCard && card.id === previousCard.id)
+    ) {
       return { ...card, isHidden };
     }
     return card;
@@ -58,7 +53,7 @@ function changeCardMatchedStatus(cardList: MCGameCardDeck): MCGameCardDeck {
   });
 }
 
-function matchesCardId(id: MCGameCard["id"]): string | null {
+function matchesCardId(id: MCGameCard["uid"]): string | null {
   const cardIdRegex = /^((?:[a-z]_card))(?:_\d)$/;
   const idMatch = id.match(cardIdRegex);
   if (cardIdRegex.test(id) && idMatch) {
@@ -71,8 +66,8 @@ function checkDualCardMatching<T extends MCGameCard>(
   firstCard: T,
   secondCard: T
 ): boolean {
-  const firstMatchCardId = matchesCardId(firstCard.id);
-  const secondMatchCardId = matchesCardId(secondCard.id);
+  const firstMatchCardId = matchesCardId(firstCard.uid);
+  const secondMatchCardId = matchesCardId(secondCard.uid);
   return Boolean(
     firstMatchCardId &&
       secondMatchCardId &&
@@ -101,17 +96,25 @@ export function gameReducer(
       };
     }
     case MCGameActionType.MATCHED_CARDS: {
-      const [firstCard, secondCard] = filterShownCards(state.cardDeck);
+      const { selectedCards } = state.cardsShown;
+      const [firstCard, secondCard] = Object.keys(
+        selectedCards as MCGameSelectedCards
+      );
       if (firstCard && secondCard) {
-        const bothCardsMatched = checkDualCardMatching(firstCard, secondCard);
+        const bothCardsMatched = checkDualCardMatching(
+          selectedCards![firstCard],
+          selectedCards![secondCard]
+        );
         return {
-          ...state,
-          cardsShown: 0,
+          cardsShown: { counter: 0, selectedCards: null },
           cardDeck: bothCardsMatched
             ? changeCardMatchedStatus(state.cardDeck)
             : changeCardHiddenStatus({
                 list: state.cardDeck,
-                cards: { currentCard: secondCard, previousCard: firstCard },
+                cards: {
+                  currentCard: selectedCards![secondCard],
+                  previousCard: selectedCards![firstCard],
+                },
                 isHidden: true,
               }),
         };
@@ -120,9 +123,23 @@ export function gameReducer(
     }
     case MCGameActionType.SHOW_CARD: {
       const currentCard = action.payload as MCGameCard;
+      if (
+        state.cardsShown.counter > 0 &&
+        state.cardsShown.selectedCards?.hasOwnProperty(currentCard.uid) &&
+        state.cardsShown.selectedCards?.[currentCard.uid].uid ===
+          currentCard.uid
+      ) {
+        return state;
+      }
       return {
-        ...state,
-        cardsShown: (state.cardsShown + 1) as MCGameCardsShown,
+        cardsShown: {
+          counter: (state.cardsShown.counter +
+            1) as MCGameCardsShown["counter"],
+          selectedCards: {
+            ...state.cardsShown.selectedCards,
+            [currentCard.uid]: currentCard,
+          },
+        },
         cardDeck: changeCardHiddenStatus({
           list: state.cardDeck,
           cards: { currentCard },

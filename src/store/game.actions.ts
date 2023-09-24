@@ -9,7 +9,7 @@ export enum MCGameActionType {
 
 export type MCGameAction = {
   type: MCGameActionType;
-  payload: MCGameActionPayload;
+  payload?: MCGameActionPayload;
 };
 
 export type MCGameActionPayload = MCGameCard | MCGameCardDeck;
