@@ -1,2 +1,2 @@
-export * from './board.component';
-export * from './board.test';
+export { default } from "./board.component";
+export * from "./board.test";

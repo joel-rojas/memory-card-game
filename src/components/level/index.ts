@@ -1,2 +1,2 @@
-export * from './level.component';
-export * from './level.test';
+export { default } from "./level.component";
+export * from "./level.test";

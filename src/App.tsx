@@ -2,8 +2,7 @@ import React from "react";
 import "./App.css";
 import Home from "@pages/Home";
 import Play from "@pages/Play";
-import AppProvider from "@contexts/app-context";
-import GameProvider from "@contexts/game-context";
+import { AppProvider, GameProvider } from "@contexts";
 
 function App() {
   return (

@@ -1,2 +1,2 @@
-export * from './countdown.component';
+export { default } from './countdown.component';
 export * from './countdown.test';

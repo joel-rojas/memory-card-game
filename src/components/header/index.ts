@@ -1,2 +1,2 @@
-export * from './header.component';
-export * from './header.test';
+export { default } from "./header.component";
+export * from "./header.test";

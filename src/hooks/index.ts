@@ -1,1 +1,1 @@
-export * from './useGameSetup';
+export { default as useGameSetup } from "./useGameSetup";

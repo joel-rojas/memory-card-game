@@ -1,2 +1,2 @@
-export * from './body.component';
-export * from './body.test';
+export { default } from "./body.component";
+export * from "./body.test";
