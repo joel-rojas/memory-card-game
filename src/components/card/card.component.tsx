@@ -11,10 +11,14 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ card, onTap }) => {
-  const { id } = card;
+  const { id, isHidden } = card;
   return (
-    <div className="p-1 shadow-sm" onClick={(ev) => onTap(ev, card)}>
-      <img src={require(`@assets/${id}.png`)} loading="lazy" />
+    <div className="p-1 shadow-md" onClick={(ev) => onTap(ev, card)}>
+      {isHidden ? (
+        <img src={require(`@assets/cover_card.png`)} loading="lazy" />
+      ) : (
+        <img src={require(`@assets/${id}.png`)} loading="lazy" />
+      )}
     </div>
   );
 };
