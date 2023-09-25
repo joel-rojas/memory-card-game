@@ -51,15 +51,21 @@ const useGameSetup = () => {
     return list as T;
   };
 
-  const handleCardOnClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    card: MCGameCard
-  ): void => {
-    dispatch({
-      type: MCGameActionType.SHOW_CARD,
-      payload: card,
-    });
-  };
+  const handleCardOnClick = React.useCallback(
+    (
+      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      card: MCGameCard
+    ): void => {
+      if (state.cardsShown.counter < MAX_CARDS_SHOWN_PER_TURN) {
+        dispatch({
+          type: MCGameActionType.SHOW_CARD,
+          payload: card,
+        });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.cardsShown]
+  );
 
   // TODO: Refactor this side effect to generate deck once a game is started
   React.useLayoutEffect(() => {
@@ -99,7 +105,9 @@ const useGameSetup = () => {
   // Check if a pair of cards shown are matched
   React.useEffect(() => {
     if (state.cardsShown.counter === MAX_CARDS_SHOWN_PER_TURN) {
-      dispatch({ type: MCGameActionType.MATCHED_CARDS });
+      setTimeout(() => {
+        dispatch({ type: MCGameActionType.MATCHED_CARDS });
+      }, 1000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.cardsShown.counter]);

@@ -29,14 +29,14 @@ function changeCardHiddenStatus({
   isHidden,
 }: {
   list: MCGameCardDeck;
-  cards: { currentCard: MCGameCard; previousCard?: MCGameCard };
+  cards: { currentCard: MCGameCard; previousCard: MCGameCard | null };
   isHidden: boolean;
 }): MCGameCardDeck {
   const { currentCard, previousCard } = cards;
   return list.map((card) => {
     if (
-      card.id === currentCard.id ||
-      (previousCard && card.id === previousCard.id)
+      card.uid === currentCard.uid ||
+      (previousCard && card.uid === previousCard.uid)
     ) {
       return { ...card, isHidden };
     }
@@ -142,7 +142,7 @@ export function gameReducer(
         },
         cardDeck: changeCardHiddenStatus({
           list: state.cardDeck,
-          cards: { currentCard },
+          cards: { currentCard, previousCard: null },
           isHidden: false,
         }),
       };
