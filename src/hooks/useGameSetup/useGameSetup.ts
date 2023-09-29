@@ -56,7 +56,10 @@ const useGameSetup = () => {
       event: React.MouseEvent<HTMLDivElement, MouseEvent>,
       card: MCGameCard
     ): void => {
-      if (state.cardsShown.counter < MAX_CARDS_SHOWN_PER_TURN) {
+      if (
+        state.cardsShown.counter < MAX_CARDS_SHOWN_PER_TURN &&
+        !card.isMatched
+      ) {
         dispatch({
           type: MCGameActionType.SHOW_CARD,
           payload: card,
