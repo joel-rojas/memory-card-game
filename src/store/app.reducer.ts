@@ -7,6 +7,7 @@ export const initialState: MCAppState = {
 };
 
 function determineCardListMatches(cardDeck: MCGameCardDeck): boolean {
+  if (cardDeck.length === 0) return false;
   return cardDeck.every((card) => card.isMatched);
 }
 
