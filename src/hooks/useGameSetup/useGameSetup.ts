@@ -14,10 +14,8 @@ const useGameSetup = () => {
 
   const getRandomCharCode = () => {
     const MAX_AVAILABLE_CARDS = 16;
-    const INITIAL_CHAR_CODE = 96;
-    return (
-      INITIAL_CHAR_CODE + Math.floor(Math.random() * MAX_AVAILABLE_CARDS + 1)
-    );
+    const INITIAL_CHAR_CODE = 97;
+    return INITIAL_CHAR_CODE + Math.floor(Math.random() * MAX_AVAILABLE_CARDS);
   };
 
   const getInitialRandomList = (count: number) => {
