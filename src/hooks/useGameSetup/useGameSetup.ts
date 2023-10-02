@@ -107,11 +107,15 @@ const useGameSetup = () => {
 
   // Check if a pair of cards shown are matched
   React.useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
     if (state.cardsShown.counter === MAX_CARDS_SHOWN_PER_TURN) {
-      setTimeout(() => {
+      timer = setTimeout(() => {
         dispatch({ type: MCGameActionType.MATCHED_CARDS });
-      }, 1000);
+      }, 500);
     }
+    return () => {
+      timer && clearTimeout(timer);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.cardsShown.counter]);
 
