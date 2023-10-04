@@ -7,11 +7,9 @@ import { AppProvider, GameProvider } from "@contexts";
 function App() {
   return (
     <AppProvider>
-      <Home>
-        <GameProvider>
-          <Play />
-        </GameProvider>
-      </Home>
+      <GameProvider>
+        <Play />
+      </GameProvider>
     </AppProvider>
   );
 }
