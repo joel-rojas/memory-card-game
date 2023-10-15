@@ -1,19 +1,24 @@
 import React from "react";
 
-import { Card, Body, Board } from "@components";
+import { Card, Body, Board, Header, CountDown } from "@components";
 import { useGameSetup } from "@hooks";
 
 export default function Play() {
-  const { state, handleCardOnClick } = useGameSetup();
+  const { state, countdown, handleCardOnClick } = useGameSetup();
   return (
-    <Body>
-      <Board>
-        {state.cardDeck.map((card) => {
-          return (
-            <Card key={card.uid} card={card} onTap={handleCardOnClick} />
-          );
-        })}
-      </Board>
-    </Body>
+    <>
+      <Header>
+        <CountDown>{countdown}</CountDown>
+      </Header>
+      <Body>
+        <Board>
+          {state.cardDeck.map((card) => {
+            return (
+              <Card key={card.uid} card={card} onTap={handleCardOnClick} />
+            );
+          })}
+        </Board>
+      </Body>
+    </>
   );
 }

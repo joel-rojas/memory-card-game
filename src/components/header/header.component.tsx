@@ -1,5 +1,11 @@
 import React from "react";
-
-export default function Header() {
-  return <div></div>;
+interface HeaderProps {
+  children: React.ReactNode;
 }
+const Header: React.FC<HeaderProps> = ({ children }) => {
+  return (
+    <div className="container flex justify-center mx-auto">{children}</div>
+  );
+};
+
+export default Header;

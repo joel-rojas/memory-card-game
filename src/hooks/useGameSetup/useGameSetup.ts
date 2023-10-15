@@ -83,23 +83,29 @@ const useGameSetup = () => {
 
   // Init and process game countdown timer
   React.useEffect(() => {
-    if (countdown < 0) {
+    let timerId: NodeJS.Timeout | null = null;
+    if (countdown < 0 && timerId) {
+      clearInterval(timerId);
       return;
     }
-    const timerId = setInterval(() => {
-      setCountdown((prev) => prev - 1);
-    }, 1000);
+    if (countdown >= 0) {
+      timerId = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
     return () => {
-      clearInterval(timerId);
+      timerId && clearInterval(timerId);
     };
   }, [countdown]);
 
   // Check game status on every shown card and countdown value change
   React.useEffect(() => {
-    appDispatch({
-      type: MCActionType.CHECK_STATUS,
-      payload: { cardDeck, countdown },
-    });
+    if (countdown >= 0) {
+      appDispatch({
+        type: MCActionType.CHECK_STATUS,
+        payload: { cardDeck, countdown },
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardDeck, countdown]);
 
@@ -124,6 +130,7 @@ const useGameSetup = () => {
 
   return {
     state,
+    countdown,
     handleCardOnClick,
   };
 };
