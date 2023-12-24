@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Card, Body, Board, Header, CountDown } from "@components";
+import { Card, Body, Board, Header, CountDown, Button } from "@components";
 import { useGameSetup } from "@hooks";
 
 export default function Play() {
@@ -8,6 +8,7 @@ export default function Play() {
   return (
     <>
       <Header>
+        <Button text='Pause' />
         <CountDown>{countdown}</CountDown>
       </Header>
       <Body>
