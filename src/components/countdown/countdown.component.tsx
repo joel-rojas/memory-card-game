@@ -9,7 +9,7 @@ const CountDown: React.FC<CountDownProps> = ({ children: time }) => {
   if (typeof time === "number" && time >= 0) {
     parsedTime = (time as number) < 10 ? `0${time}` : `${time}`;
   }
-  return <h1 className="sm:text-sm lg:text-lg">{parsedTime}</h1>;
+  return <h1 className="text-2xl lg:text-6xl">{parsedTime}</h1>;
 };
 
 export default CountDown;
