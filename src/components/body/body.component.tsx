@@ -6,7 +6,9 @@ interface BodyProps {
 
 const Body: React.FC<BodyProps> = ({ children }) => {
   return (
-    <div className="container flex mx-auto flex-wrap">{children}</div>
+    <div className="flex flex-1 justify-center">
+      {children}
+    </div>
   );
 };
 

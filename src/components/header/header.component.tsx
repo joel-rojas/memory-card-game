@@ -4,7 +4,9 @@ interface HeaderProps {
 }
 const Header: React.FC<HeaderProps> = ({ children }) => {
   return (
-    <div className="container flex justify-center mx-auto">{children}</div>
+    <div className="container flex justify-around items-center mx-auto p-4">
+      {children}
+    </div>
   );
 };
 
