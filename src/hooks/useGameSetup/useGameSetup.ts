@@ -6,6 +6,7 @@ import { MCActionType, MCGameActionType } from "@store";
 const useGameSetup = () => {
   const { state, dispatch } = useGameContext();
   const { state: appState, dispatch: appDispatch } = useAppContext();
+  const [showPauseModal, setShowPauseModal] = React.useState<boolean>(false);
   const [countdown, setCountdown] = React.useState<number>(
     appState.gameLevel.countdown
   );
@@ -68,6 +69,14 @@ const useGameSetup = () => {
     [state.cardsShown]
   );
 
+  const handleShowModalClick = () => {
+    setShowPauseModal(true);
+  };
+
+  const handleCloseModalClick = () => {
+    setShowPauseModal(false);
+  };
+
   // TODO: Refactor this side effect to generate deck once a game is started
   React.useLayoutEffect(() => {
     cardDeck.length === 0 &&
@@ -84,11 +93,11 @@ const useGameSetup = () => {
   // Init and process game countdown timer
   React.useEffect(() => {
     let timerId: NodeJS.Timeout | null = null;
-    if (countdown < 0 && timerId) {
+    if ((countdown < 0 || showPauseModal) && timerId) {
       clearInterval(timerId);
       return;
     }
-    if (countdown >= 0) {
+    if (!showPauseModal && countdown >= 0) {
       timerId = setInterval(() => {
         setCountdown((prev) => prev - 1);
       }, 1000);
@@ -96,7 +105,7 @@ const useGameSetup = () => {
     return () => {
       timerId && clearInterval(timerId);
     };
-  }, [countdown]);
+  }, [countdown, showPauseModal]);
 
   // Check game status on every shown card and countdown value change
   React.useEffect(() => {
@@ -131,6 +140,9 @@ const useGameSetup = () => {
   return {
     state,
     countdown,
+    showPauseModal,
+    handleShowModalClick,
+    handleCloseModalClick,
     handleCardOnClick,
   };
 };
