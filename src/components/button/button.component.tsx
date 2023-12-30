@@ -2,11 +2,14 @@ import React from "react";
 
 interface ButtonProps {
   text: string;
+  onClick: () => void;
   btnCls?: string;
 }
-const Button: React.FC<ButtonProps> = ({ btnCls = "", text }) => {
+const Button: React.FC<ButtonProps> = ({ btnCls = "", onClick, text }) => {
   return (
-    <button className={`p-2 text-xl lg:text-3xl ${btnCls}`}>{text}</button>
+    <button className={`p-2 text-xl lg:text-3xl ${btnCls}`} onClick={onClick}>
+      {text}
+    </button>
   );
 };
 
