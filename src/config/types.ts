@@ -5,6 +5,7 @@ export interface MCSingleComponentProps {
 export interface MCAppState {
   gameLevel: MCGameLevel;
   gameStatus: MCGameStatus;
+  gameProgress: MCGameProgress;
 }
 
 export interface MCGameState {
@@ -35,4 +36,6 @@ export type MCGameCard = {
 
 export type MCGameCardDeck = MCGameCard[];
 
-export type MCGameStatus = "idle" | "inProgress" | "lose" | "win";
+export type MCGameProgress = "idle" | "inProgress" | "lose" | "win";
+
+export type MCGameStatus = "new" | "reset" | "resume" | "pause";

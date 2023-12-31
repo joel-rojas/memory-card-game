@@ -4,13 +4,12 @@ import { MCGameCardDeck, MCGameCard } from "@config";
 import { MCActionType, MCGameActionType } from "@store";
 
 const useGameSetup = () => {
-  const { state, dispatch } = useGameContext();
+  const { state: gameState, dispatch: gameDispatch } = useGameContext();
   const { state: appState, dispatch: appDispatch } = useAppContext();
   const [showPauseModal, setShowPauseModal] = React.useState<boolean>(false);
-  const [countdown, setCountdown] = React.useState<number>(
-    appState.gameLevel.countdown
-  );
-  const { cardDeck } = state;
+  const { gameStatus, gameLevel } = appState;
+  const { cardDeck } = gameState;
+  const [countdown, setCountdown] = React.useState<number>(gameLevel.countdown);
   const MAX_CARDS_SHOWN_PER_TURN = 2;
 
   const getRandomCharCode = () => {
@@ -56,18 +55,25 @@ const useGameSetup = () => {
       card: MCGameCard
     ): void => {
       if (
-        state.cardsShown.counter < MAX_CARDS_SHOWN_PER_TURN &&
+        gameState.cardsShown.counter < MAX_CARDS_SHOWN_PER_TURN &&
         !card.isMatched
       ) {
-        dispatch({
+        gameDispatch({
           type: MCGameActionType.SHOW_CARD,
           payload: card,
         });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [state.cardsShown]
+    [gameState.cardsShown]
   );
+
+  const handleResetGameClick = () => {
+    appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "new" });
+    gameDispatch({ type: MCGameActionType.RESET_DECK });
+    setCountdown(gameLevel.countdown);
+    setShowPauseModal(false);
+  };
 
   const handleShowModalClick = () => {
     setShowPauseModal(true);
@@ -80,20 +86,26 @@ const useGameSetup = () => {
   // TODO: Refactor this side effect to generate deck once a game is started
   React.useLayoutEffect(() => {
     cardDeck.length === 0 &&
-      dispatch({ type: MCGameActionType.START_DECK, payload: generateDeck() });
+      gameDispatch({ type: MCGameActionType.START_DECK, payload: generateDeck() });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardDeck]);
 
   // Check game status at the start of the game
   React.useEffect(() => {
-    appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "inProgress" });
+    appDispatch({ type: MCActionType.CHANGE_PROGRESS, payload: "inProgress" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Init and process game countdown timer
   React.useEffect(() => {
     let timerId: NodeJS.Timeout | null = null;
-    if ((countdown < 0 || showPauseModal) && timerId) {
+    if (
+      (countdown < 0 ||
+        gameStatus === "new" ||
+        gameStatus === "pause" ||
+        gameStatus === "reset") &&
+      timerId
+    ) {
       clearInterval(timerId);
       return;
     }
@@ -105,13 +117,13 @@ const useGameSetup = () => {
     return () => {
       timerId && clearInterval(timerId);
     };
-  }, [countdown, showPauseModal]);
+  }, [countdown, gameStatus, showPauseModal]);
 
-  // Check game status on every shown card and countdown value change
+  // Check game progress on every shown card and countdown value change
   React.useEffect(() => {
     if (countdown >= 0) {
       appDispatch({
-        type: MCActionType.CHECK_STATUS,
+        type: MCActionType.CHANGE_PROGRESS,
         payload: { cardDeck, countdown },
       });
     }
@@ -121,16 +133,16 @@ const useGameSetup = () => {
   // Check if a pair of cards shown are matched
   React.useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
-    if (state.cardsShown.counter === MAX_CARDS_SHOWN_PER_TURN) {
+    if (gameState.cardsShown.counter === MAX_CARDS_SHOWN_PER_TURN) {
       timer = setTimeout(() => {
-        dispatch({ type: MCGameActionType.MATCHED_CARDS });
+        gameDispatch({ type: MCGameActionType.MATCHED_CARDS });
       }, 500);
     }
     return () => {
       timer && clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.cardsShown.counter]);
+  }, [gameState.cardsShown.counter]);
 
   // TODO: Temporary log to check game status
   React.useEffect(() => {
@@ -138,9 +150,10 @@ const useGameSetup = () => {
   }, [appState]);
 
   return {
-    state,
+    state: gameState,
     countdown,
     showPauseModal,
+    handleResetGameClick,
     handleShowModalClick,
     handleCloseModalClick,
     handleCardOnClick,

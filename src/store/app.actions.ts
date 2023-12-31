@@ -1,7 +1,8 @@
-import { MCGameLevel, MCGameStatus, MCGameCardDeck } from "@config";
+import { MCGameLevel, MCGameStatus, MCGameCardDeck, MCGameProgress } from "@config";
 
 export enum MCActionType {
   CHECK_STATUS = "Check Game Status",
+  CHANGE_PROGRESS = "Change Game Progress",
   CHANGE_STATUS = "Change Game Status",
   CHANGE_LEVEL = "Change Game Level",
   RESET_GAME = "Reset Game",
@@ -14,6 +15,7 @@ export type MCAppAction = {
 
 export type MCAppActionPayload =
   | MCGameStatus
+  | MCGameProgress
   | MCGameLevel
   | MCAppActionCustomPayloads;
 

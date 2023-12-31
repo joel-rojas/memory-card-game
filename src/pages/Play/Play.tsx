@@ -15,8 +15,9 @@ export default function Play() {
   const {
     state,
     countdown,
-    handleCardOnClick,
     showPauseModal,
+    handleCardOnClick,
+    handleResetGameClick,
     handleShowModalClick,
     handleCloseModalClick,
   } = useGameSetup();
@@ -26,7 +27,7 @@ export default function Play() {
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-2xl text-center md:text-4xl">Game Paused</h1>
           <Button text="Resume" onClick={handleCloseModalClick} />
-          <Button text="Reset" onClick={handleCloseModalClick} />
+          <Button text="Reset" onClick={handleResetGameClick} />
           <Button text="Main Menu" onClick={handleCloseModalClick} />
         </div>
       </Modal>
