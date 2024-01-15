@@ -1,8 +1,8 @@
-import { MCActionType, MCAppAction, MCAppActionCustomPayload1 } from "@store";
+import { MCActionType, MCAppAction, MCAppActionCustomPayload } from "@store";
 import { MCAppState, MCGameCardDeck, MCGameLevel, MCGameProgress } from "@config";
 
 export const initialState: MCAppState = {
-  gameLevel: { label: "easy", countdown: 15 },
+  gameLevel: { label: "easy", countdown: 45 },
   gameStatus: "new",
   gameProgress: 'idle',
 };
@@ -17,8 +17,11 @@ function determineGameProgress(
   cardDeck: MCGameCardDeck,
   currentCountdown: number
 ): MCGameProgress {
+  const allCardsMatched = determineCardListMatches(cardDeck);
+  if (status === "idle" && !allCardsMatched && currentCountdown > 0) {
+    return "inProgress";
+  }
   if (status === "inProgress") {
-    const allCardsMatched = determineCardListMatches(cardDeck);
     if (currentCountdown > 0 && allCardsMatched) {
       return "win";
     }
@@ -46,9 +49,15 @@ export function appReducer(state: MCAppState, action: MCAppAction): MCAppState {
         gameLevel: level,
       };
     }
+    case MCActionType.CHANGE_PROGRESS_BY_VALUE: {
+      return {
+        ...state,
+        gameProgress: action.payload as MCGameProgress,
+      }
+    }
     case MCActionType.CHANGE_PROGRESS: {
       const { cardDeck, countdown } =
-        action.payload as MCAppActionCustomPayload1;
+        action.payload as MCAppActionCustomPayload;
       return {
         ...state,
         gameProgress: determineGameProgress(state.gameProgress, cardDeck, countdown),

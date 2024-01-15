@@ -15,6 +15,43 @@ export const gameInitialState: MCGameState = {
   },
 };
 
+function getRandomCharCode(): number {
+  const MAX_AVAILABLE_CARDS = 16;
+  const INITIAL_CHAR_CODE = 97;
+  return INITIAL_CHAR_CODE + Math.floor(Math.random() * MAX_AVAILABLE_CARDS);
+};
+
+function getInitialRandomList(count: number): string[] {
+  let nums = new Set<MCGameCard["id"]>();
+  while (nums.size < count) {
+    const randomCard = `${String.fromCharCode(getRandomCharCode())}_card`;
+    !nums.has(randomCard) && nums.add(randomCard);
+  }
+  return Array.from(nums);
+};
+
+function generateDeck<T extends MCGameCardDeck>(): T {
+  const MAX_CARDS = 10;
+  const randomList = getInitialRandomList(MAX_CARDS);
+  const list = [];
+  let i = 0;
+  let count = 0;
+  while (i < MAX_CARDS) {
+    const id = randomList[i];
+    const uid = `${id}_${++count}`;
+    const newItem = {
+      id,
+      uid,
+      isMatched: false,
+      isHidden: true,
+    };
+    list.push({ ...newItem }, { ...newItem, uid: `${id}_${++count}` });
+    count = 0;
+    i++;
+  }
+  return list as T;
+};
+
 function shuffleDeck<T extends MCGameCardDeck>(cardDeck: T): T {
   const initialIndex = cardDeck.length - 1;
   for (let i = initialIndex; i > 0; i--) {
@@ -89,10 +126,9 @@ export function gameReducer(
 ): MCGameState {
   switch (action.type) {
     case MCGameActionType.START_DECK: {
-      const cardDeck = action.payload as MCGameCardDeck;
       return {
-        ...state,
-        cardDeck: shuffleDeck(cardDeck),
+        ...gameInitialState,
+        cardDeck: shuffleDeck(generateDeck()),
       };
     }
     case MCGameActionType.MATCHED_CARDS: {

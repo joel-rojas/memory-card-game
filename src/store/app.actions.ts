@@ -3,6 +3,7 @@ import { MCGameLevel, MCGameStatus, MCGameCardDeck, MCGameProgress } from "@conf
 export enum MCActionType {
   CHECK_STATUS = "Check Game Status",
   CHANGE_PROGRESS = "Change Game Progress",
+  CHANGE_PROGRESS_BY_VALUE = "Change Game Progress By Value",
   CHANGE_STATUS = "Change Game Status",
   CHANGE_LEVEL = "Change Game Level",
   RESET_GAME = "Reset Game",
@@ -10,7 +11,7 @@ export enum MCActionType {
 
 export type MCAppAction = {
   type: MCActionType;
-  payload: MCAppActionPayload;
+  payload?: MCAppActionPayload;
 };
 
 export type MCAppActionPayload =
@@ -19,9 +20,9 @@ export type MCAppActionPayload =
   | MCGameLevel
   | MCAppActionCustomPayloads;
 
-export type MCAppActionCustomPayload1 = {
+export type MCAppActionCustomPayload = {
   cardDeck: MCGameCardDeck;
   countdown: number;
 }
 
-export type MCAppActionCustomPayloads = MCAppActionCustomPayload1 | number;
+export type MCAppActionCustomPayloads = MCAppActionCustomPayload | number;
