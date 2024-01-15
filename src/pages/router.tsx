@@ -1,10 +1,10 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-import { Home, Play } from "@pages";
+import { Home, NotFound, Play } from "@pages";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Home />},
+  { path: "/", element: <Home />, errorElement: <NotFound />},
   { path: "/play", element: <Play /> },
 ]);
 
