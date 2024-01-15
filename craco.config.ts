@@ -21,6 +21,8 @@ const config = {
       "@store/*": path.resolve(__dirname, "src/store/*"),
       "@config": path.resolve(__dirname, "src/config"),
       "@config/*": path.resolve(__dirname, "src/config/*"),
+      "@containers": path.resolve(__dirname, "src/containers"),
+      "@containers/*": path.resolve(__dirname, "src/containers/*"),
     },
   },
 };

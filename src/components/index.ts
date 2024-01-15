@@ -6,3 +6,5 @@ export { default as CountDown } from "./countdown";
 export { default as Header } from "./header";
 export { default as Level } from "./level";
 export { default as Page } from "./page";
+export { default as Modal } from "./modal";
+export { default as Headline} from './headline';

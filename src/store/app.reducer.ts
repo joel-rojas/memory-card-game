@@ -1,9 +1,10 @@
-import { MCActionType, MCAppAction, MCAppActionCustomPayload1 } from "@store";
-import { MCGameStatus, MCAppState, MCGameCardDeck, MCGameLevel } from "@config";
+import { MCActionType, MCAppAction, MCAppActionCustomPayload } from "@store";
+import { MCAppState, MCGameCardDeck, MCGameLevel, MCGameProgress } from "@config";
 
 export const initialState: MCAppState = {
-  gameLevel: { label: "easy", countdown: 15 },
-  gameStatus: "idle",
+  gameLevel: { label: "easy", countdown: 45 },
+  gameStatus: "new",
+  gameProgress: 'idle',
 };
 
 function determineCardListMatches(cardDeck: MCGameCardDeck): boolean {
@@ -11,13 +12,16 @@ function determineCardListMatches(cardDeck: MCGameCardDeck): boolean {
   return cardDeck.every((card) => card.isMatched);
 }
 
-function determineGameStatus(
-  status: MCGameStatus,
+function determineGameProgress(
+  status: MCGameProgress,
   cardDeck: MCGameCardDeck,
   currentCountdown: number
-): MCGameStatus {
+): MCGameProgress {
+  const allCardsMatched = determineCardListMatches(cardDeck);
+  if (status === "idle" && !allCardsMatched && currentCountdown > 0) {
+    return "inProgress";
+  }
   if (status === "inProgress") {
-    const allCardsMatched = determineCardListMatches(cardDeck);
     if (currentCountdown > 0 && allCardsMatched) {
       return "win";
     }
@@ -45,12 +49,18 @@ export function appReducer(state: MCAppState, action: MCAppAction): MCAppState {
         gameLevel: level,
       };
     }
-    case MCActionType.CHECK_STATUS: {
-      const { cardDeck, countdown } =
-        action.payload as MCAppActionCustomPayload1;
+    case MCActionType.CHANGE_PROGRESS_BY_VALUE: {
       return {
         ...state,
-        gameStatus: determineGameStatus(state.gameStatus, cardDeck, countdown),
+        gameProgress: action.payload as MCGameProgress,
+      }
+    }
+    case MCActionType.CHANGE_PROGRESS: {
+      const { cardDeck, countdown } =
+        action.payload as MCAppActionCustomPayload;
+      return {
+        ...state,
+        gameProgress: determineGameProgress(state.gameProgress, cardDeck, countdown),
       };
     }
     case MCActionType.RESET_GAME: {
