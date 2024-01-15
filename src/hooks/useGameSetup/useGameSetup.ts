@@ -1,53 +1,24 @@
 import * as React from "react";
 import { useAppContext, useGameContext } from "@contexts";
-import { MCGameCardDeck, MCGameCard } from "@config";
+import {
+  MCGameCard,
+  MCGameModalType,
+  MCGameUIPropsList,
+  MCGameUISetPropsMap,
+} from "@config";
 import { MCActionType, MCGameActionType } from "@store";
 
 const useGameSetup = () => {
   const { state: gameState, dispatch: gameDispatch } = useGameContext();
   const { state: appState, dispatch: appDispatch } = useAppContext();
-  const [showPauseModal, setShowPauseModal] = React.useState<boolean>(false);
-  const { gameStatus, gameLevel } = appState;
+  const [showGameModal, setShowGameModal] = React.useState<MCGameModalType>({
+    type: "end",
+    isShown: false,
+  });
+  const { gameStatus, gameLevel, gameProgress } = appState;
   const { cardDeck } = gameState;
   const [countdown, setCountdown] = React.useState<number>(gameLevel.countdown);
   const MAX_CARDS_SHOWN_PER_TURN = 2;
-
-  const getRandomCharCode = () => {
-    const MAX_AVAILABLE_CARDS = 16;
-    const INITIAL_CHAR_CODE = 97;
-    return INITIAL_CHAR_CODE + Math.floor(Math.random() * MAX_AVAILABLE_CARDS);
-  };
-
-  const getInitialRandomList = (count: number) => {
-    let nums = new Set<MCGameCard["id"]>();
-    while (nums.size < count) {
-      const randomCard = `${String.fromCharCode(getRandomCharCode())}_card`;
-      !nums.has(randomCard) && nums.add(randomCard);
-    }
-    return Array.from(nums);
-  };
-
-  const generateDeck = <T extends MCGameCardDeck>(): T => {
-    const MAX_CARDS = 10;
-    const randomList = getInitialRandomList(MAX_CARDS);
-    const list = [];
-    let i = 0;
-    let count = 0;
-    while (i < MAX_CARDS) {
-      const id = randomList[i];
-      const uid = `${id}_${++count}`;
-      const newItem = {
-        id,
-        uid,
-        isMatched: false,
-        isHidden: true,
-      };
-      list.push({ ...newItem }, { ...newItem, uid: `${id}_${++count}` });
-      count = 0;
-      i++;
-    }
-    return list as T;
-  };
 
   const handleCardOnClick = React.useCallback(
     (
@@ -70,46 +41,112 @@ const useGameSetup = () => {
 
   const handleResetGameClick = () => {
     appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "new" });
-    gameDispatch({ type: MCGameActionType.RESET_DECK });
+    gameProgress === "win"
+      ? gameDispatch({ type: MCGameActionType.START_DECK })
+      : gameDispatch({ type: MCGameActionType.RESET_DECK });
+    appDispatch({
+      type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
+      payload: "idle",
+    });
     setCountdown(gameLevel.countdown);
-    setShowPauseModal(false);
+    setShowGameModal({ ...showGameModal, isShown: false });
   };
 
-  const handleShowModalClick = () => {
-    setShowPauseModal(true);
+  const handlePauseGameClick = () => {
+    appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "pause" });
+    handleShowModalClick("pause");
   };
 
-  const handleCloseModalClick = () => {
-    setShowPauseModal(false);
+  const handleResumeGameClick = () => {
+    appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "resume" });
+    setShowGameModal({ ...showGameModal, isShown: false });
+  };
+
+  const handleMainMenuClick = () => {
+    appDispatch({ type: MCActionType.RESET_GAME });
+    gameDispatch({ type: MCGameActionType.START_DECK });
+    setShowGameModal({ ...showGameModal, isShown: false });
+  };
+
+  const handleShowModalClick = (type: MCGameModalType["type"]) => {
+    setShowGameModal({ ...showGameModal, type, isShown: true });
+  };
+
+  const getModalContentProps = (
+    type: MCGameModalType["type"]
+  ): MCGameUIPropsList => {
+    const contentPropsMap: MCGameUISetPropsMap = {
+      title: {
+        text: "",
+        type: "title",
+        size: "large",
+      },
+      resume: {
+        text: "Resume",
+        type: "button",
+        onClick: handleResumeGameClick,
+      },
+      reset: {
+        text: "Reset",
+        type: "button",
+        onClick: handleResetGameClick,
+      },
+      mainMenu: {
+        text: "Main Menu",
+        type: "button",
+        onClick: handleMainMenuClick,
+      },
+    };
+    switch (type) {
+      case "pause":
+        return [
+          { ...contentPropsMap.title, text: "Game Paused" },
+          contentPropsMap.resume,
+          contentPropsMap.reset,
+          contentPropsMap.mainMenu,
+        ] as MCGameUIPropsList;
+      case "end":
+        return [
+          {
+            ...contentPropsMap.title,
+            size: "x-large",
+            text: gameProgress === "win" ? "You Win!" : "You Lose!",
+          },
+          {
+            ...contentPropsMap.reset,
+            text:
+              gameProgress === "win" ? "Restart" : contentPropsMap.reset.text,
+          },
+          contentPropsMap.mainMenu,
+        ] as MCGameUIPropsList;
+      default:
+        return [] as MCGameUIPropsList;
+    }
   };
 
   // TODO: Refactor this side effect to generate deck once a game is started
   React.useLayoutEffect(() => {
     cardDeck.length === 0 &&
-      gameDispatch({ type: MCGameActionType.START_DECK, payload: generateDeck() });
+      gameDispatch({
+        type: MCGameActionType.START_DECK,
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardDeck]);
-
-  // Check game status at the start of the game
-  React.useEffect(() => {
-    appDispatch({ type: MCActionType.CHANGE_PROGRESS, payload: "inProgress" });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // Init and process game countdown timer
   React.useEffect(() => {
     let timerId: NodeJS.Timeout | null = null;
     if (
-      (countdown < 0 ||
-        gameStatus === "new" ||
+      (gameStatus === "new" ||
         gameStatus === "pause" ||
+        gameStatus === "end" ||
         gameStatus === "reset") &&
       timerId
     ) {
       clearInterval(timerId);
       return;
     }
-    if (!showPauseModal && countdown >= 0) {
+    if (gameStatus !== "pause" && gameStatus !== "end" && countdown > 0) {
       timerId = setInterval(() => {
         setCountdown((prev) => prev - 1);
       }, 1000);
@@ -117,7 +154,17 @@ const useGameSetup = () => {
     return () => {
       timerId && clearInterval(timerId);
     };
-  }, [countdown, gameStatus, showPauseModal]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countdown, gameStatus]);
+
+  // Check if game is over and show modal if user won or lost the game
+  React.useEffect(() => {
+    if (gameStatus !== "end" && (countdown === 0 || gameProgress === "win")) {
+      appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "end" });
+      handleShowModalClick("end");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countdown, gameStatus, gameProgress]);
 
   // Check game progress on every shown card and countdown value change
   React.useEffect(() => {
@@ -130,7 +177,7 @@ const useGameSetup = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardDeck, countdown]);
 
-  // Check if a pair of cards shown are matched
+  // Check if a pair of cards shown are matched with buffer time
   React.useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     if (gameState.cardsShown.counter === MAX_CARDS_SHOWN_PER_TURN) {
@@ -146,17 +193,16 @@ const useGameSetup = () => {
 
   // TODO: Temporary log to check game status
   React.useEffect(() => {
-    console.log("GAME STATUS", appState.gameStatus);
+    console.log("GAME PROGRESS", appState.gameProgress);
   }, [appState]);
 
   return {
     state: gameState,
     countdown,
-    showPauseModal,
-    handleResetGameClick,
-    handleShowModalClick,
-    handleCloseModalClick,
+    showGameModal,
+    getModalContentProps,
     handleCardOnClick,
+    handlePauseGameClick,
   };
 };
 

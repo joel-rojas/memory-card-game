@@ -10,29 +10,24 @@ import {
   Modal,
 } from "@components";
 import { useGameSetup } from "@hooks";
+import { ModalContent } from "@containers";
 
 export default function Play() {
   const {
     state,
     countdown,
-    showPauseModal,
+    showGameModal,
+    getModalContentProps,
+    handlePauseGameClick,
     handleCardOnClick,
-    handleResetGameClick,
-    handleShowModalClick,
-    handleCloseModalClick,
   } = useGameSetup();
   return (
     <>
-      <Modal isOpen={showPauseModal}>
-        <div className="flex flex-col items-center justify-center">
-          <h1 className="text-2xl text-center md:text-4xl">Game Paused</h1>
-          <Button text="Resume" onClick={handleCloseModalClick} />
-          <Button text="Reset" onClick={handleResetGameClick} />
-          <Button text="Main Menu" onClick={handleCloseModalClick} />
-        </div>
+      <Modal isOpen={showGameModal.isShown}>
+        <ModalContent contentList={getModalContentProps(showGameModal.type)} />
       </Modal>
       <Header>
-        <Button text="Pause" onClick={handleShowModalClick} />
+        <Button text="Pause" onClick={handlePauseGameClick} />
         <CountDown>{countdown}</CountDown>
       </Header>
       <Body>
