@@ -8,8 +8,8 @@ interface BodyProps {
 const Body: React.FC<BodyProps> = ({ children, fullyCentered = false }) => {
   return (
     <div
-      className={`${
-        "flex flex-1 justify-center " + fullyCentered ? "align-center" : ""
+      className={`flex flex-1 justify-center ${
+        fullyCentered ? "align-center" : ""
       }`}
     >
       {children}
