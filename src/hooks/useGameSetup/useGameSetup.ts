@@ -1,14 +1,18 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { useAppContext, useGameContext } from "@contexts";
 import {
   MCGameCard,
   MCGameModalType,
+  MCGameRoutePath,
   MCGameUIPropsList,
   MCGameUISetPropsMap,
 } from "@config";
 import { MCActionType, MCGameActionType } from "@store";
 
 const useGameSetup = () => {
+  const navigate = useNavigate();
   const { state: gameState, dispatch: gameDispatch } = useGameContext();
   const { state: appState, dispatch: appDispatch } = useAppContext();
   const [showGameModal, setShowGameModal] = React.useState<MCGameModalType>({
@@ -65,6 +69,7 @@ const useGameSetup = () => {
   const handleMainMenuClick = () => {
     appDispatch({ type: MCActionType.RESET_GAME });
     gameDispatch({ type: MCGameActionType.START_DECK });
+    navigate(MCGameRoutePath.HOME);
     setShowGameModal({ ...showGameModal, isShown: false });
   };
 

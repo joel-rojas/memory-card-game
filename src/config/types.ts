@@ -84,3 +84,8 @@ export interface MCGameHeadlineProps {
   type: MCGameChoosenUIType<"title">;
   size: "large" | "x-large";
 };
+
+export enum MCGameRoutePath {
+  HOME = '/',
+  PLAY = '/play',
+};

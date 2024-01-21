@@ -8,6 +8,7 @@ import {
   CountDown,
   Button,
   Modal,
+  Page,
 } from "@components";
 import { useGameSetup } from "@hooks";
 import { ModalContent } from "@containers";
@@ -22,7 +23,7 @@ export default function Play() {
     handleCardOnClick,
   } = useGameSetup();
   return (
-    <>
+    <Page>
       <Modal isOpen={showGameModal.isShown}>
         <ModalContent contentList={getModalContentProps(showGameModal.type)} />
       </Modal>
@@ -39,6 +40,6 @@ export default function Play() {
           })}
         </Board>
       </Body>
-    </>
+    </Page>
   );
 }

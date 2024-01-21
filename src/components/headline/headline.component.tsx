@@ -2,12 +2,12 @@ import React from "react";
 
 interface HeadlineProps {
   children: React.ReactNode;
-  clsList: string;
+  clsList?: string;
 }
 
 const Headline: React.FC<HeadlineProps> = ({ children, clsList = "" }) => {
   return (
-    <h1 className={`mb-6 ${clsList || "text-2xl text-center md:text-4xl"}`}>
+    <h1 className={`mb-6 text-center ${clsList || "text-2xl  md:text-4xl"}`}>
       {children}
     </h1>
   );
