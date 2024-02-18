@@ -2,7 +2,7 @@ import { MCActionType, MCAppAction, MCAppActionCustomPayload } from "@store";
 import { MCAppState, MCGameCardDeck, MCGameLevel, MCGameProgress } from "@config";
 
 export const initialState: MCAppState = {
-  gameLevel: { label: "easy", countdown: 45 },
+  gameLevel: { label: "easy", countdown: 60 },
   gameStatus: "new",
   gameProgress: 'idle',
 };
