@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppContext, useGameContext } from "@contexts";
 import {
   MCGameCard,
+  MCGameCurrentModalActionKeys,
+  MCGameCurrentUIProps,
   MCGameModalType,
   MCGameRoutePath,
   MCGameUIPropsList,
@@ -80,24 +82,27 @@ const useGameSetup = () => {
   const getModalContentProps = (
     type: MCGameModalType["type"]
   ): MCGameUIPropsList => {
-    const contentPropsMap: MCGameUISetPropsMap = {
+    const contentPropsMap: MCGameUISetPropsMap<
+      MCGameCurrentModalActionKeys,
+      MCGameCurrentUIProps
+    > = {
       title: {
-        text: "",
-        type: "title",
+        label: "",
+        type: "headline",
         size: "large",
       },
       resume: {
-        text: "Resume",
+        label: "Resume",
         type: "button",
         onClick: handleResumeGameClick,
       },
       reset: {
-        text: "Reset",
+        label: "Reset",
         type: "button",
         onClick: handleResetGameClick,
       },
       mainMenu: {
-        text: "Main Menu",
+        label: "Main Menu",
         type: "button",
         onClick: handleMainMenuClick,
       },
@@ -115,12 +120,12 @@ const useGameSetup = () => {
           {
             ...contentPropsMap.title,
             size: "x-large",
-            text: gameProgress === "win" ? "You Win!" : "You Lose!",
+            label: gameProgress === "win" ? "You Win!" : "You Lose!",
           },
           {
             ...contentPropsMap.reset,
-            text:
-              gameProgress === "win" ? "Restart" : contentPropsMap.reset.text,
+            label:
+              gameProgress === "win" ? "Restart" : contentPropsMap?.reset?.label,
           },
           contentPropsMap.mainMenu,
         ] as MCGameUIPropsList;

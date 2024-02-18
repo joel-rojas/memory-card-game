@@ -8,9 +8,13 @@ const NotFound = () => {
 
   return (
     <Page>
-      <Body fullyCentered>
-        <Headline>Oops!! Page is not found!</Headline>
-        <Headline clsList="text-xl">Go back and start a new game!</Headline>
+      <Body fullyCentered asColumn asContainer>
+        <Headline size="large" type="headline" label="Oops!! Page is not found!" />
+        <Headline
+          size="small"
+          type="headline"
+          label="Go back and start a new game!"
+        />
       </Body>
     </Page>
   );
