@@ -1,14 +1,20 @@
+import { MCGameHeadlineProps } from "config";
 import React from "react";
 
-interface HeadlineProps {
-  children: React.ReactNode;
-  clsList?: string;
-}
-
-const Headline: React.FC<HeadlineProps> = ({ children, clsList = "" }) => {
+const Headline: React.FC<MCGameHeadlineProps> = ({ label, size, type }) => {
+  const setupClassListPerSize = (size: string) => {
+    switch (size) {
+      case "large":
+        return "text-4xl md:text-6xl";
+      case "medium":
+        return "text-2xl  md:text-4xl";
+      default:
+        return "text-xl";
+    }
+  };
   return (
-    <h1 className={`mb-6 text-center ${clsList || "text-2xl  md:text-4xl"}`}>
-      {children}
+    <h1 className={`mb-6 text-center ${setupClassListPerSize(size)}`}>
+      {label}
     </h1>
   );
 };

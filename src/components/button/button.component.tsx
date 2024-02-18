@@ -1,14 +1,20 @@
 import React from "react";
 
-interface ButtonProps {
-  text: string;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  btnCls?: string;
-}
-const Button: React.FC<ButtonProps> = ({ btnCls = "", onClick, text }) => {
+import { MCGameButtonProps } from "@config";
+
+const Button: React.FC<MCGameButtonProps> = ({
+  btnCls = "",
+  onClick,
+  label,
+  type = "button",
+}) => {
   return (
-    <button className={`p-2 text-xl lg:text-3xl ${btnCls}`} onClick={onClick}>
-      {text}
+    <button
+      type={type}
+      className={`p-2 text-xl lg:text-3xl ${btnCls}`}
+      onClick={onClick}
+    >
+      {label}
     </button>
   );
 };
