@@ -1,1 +1,2 @@
-export { default as ModalContent } from "./modal-content";
+export { default as MenuContent } from "./menu-content";
+export { default as ProgressiveMenu } from "./progressive-menu";
