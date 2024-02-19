@@ -4,23 +4,45 @@ import { Button } from "@components";
 
 interface ModalProps {
   isOpen: boolean;
+  closeOnBackground?: boolean;
   onClose?: () => void | null;
   children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose = null, children }) => {
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose = null,
+  closeOnBackground = false,
+  children,
+}) => {
   const closeModal = () => {
     onClose && onClose();
   };
+  const handleModalContentClick = (
+    ev: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    ev.stopPropagation();
+  };
+  const handleModalOnBackgroundClick = () => {
+    if (closeOnBackground) {
+      closeModal();
+    }
+  };
 
   return isOpen ? (
-    <div className="fixed z-10 left-0 top-0 w-full h-full overflow-auto bg-black/90">
-      <div className="bg-white p-4 my-[10%] mx-auto w-1/2">
+    <div
+      className="fixed z-10 left-0 top-0 w-full h-full overflow-auto bg-black/90"
+      onClick={handleModalOnBackgroundClick}
+    >
+      <div
+        className="flex flex-col bg-white p-4 my-[10%] mx-auto w-1/2"
+        onClick={handleModalContentClick}
+      >
         {onClose ? (
           <Button
             type="button"
             label="X"
-            btnCls="close-button"
+            btnCls="mb-2 self-end"
             onClick={closeModal}
           />
         ) : null}

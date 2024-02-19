@@ -8,6 +8,7 @@ import {
   MCGameRoutePath,
   MCGameCurrentUIProps,
   MCGameProgressiveMenuKeys,
+  MCGameUIPropsList,
 } from "@config";
 import { useAppContext } from "@contexts";
 import { MCActionType } from "@store";
@@ -15,6 +16,7 @@ import { MCActionType } from "@store";
 const useMainMenuSetup = () => {
   const navigate = useNavigate();
   const { dispatch } = useAppContext();
+  const [showAboutModal, setShowAboutModal] = React.useState(false);
   const [currentMenu, setCurrentMenu] =
     React.useState<MCGameMainMenuContentKeys>("startGameMenu");
   const onNextMenu = (menuKey: MCGameMainMenuContentKeys) => {
@@ -25,7 +27,10 @@ const useMainMenuSetup = () => {
 
   const handleStartGameClick = () => {};
   const handleGoBackClick = () => {};
-  const handleAboutClick = () => {};
+
+  const handleAboutModalClick = (isShown: boolean) => {
+    setShowAboutModal(isShown);
+  };
 
   const handleGameLevelChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -56,12 +61,14 @@ const useMainMenuSetup = () => {
             label: "Start Game",
             type: "button",
             name: "startGame",
+            textCls: "text-2xl sm:text-3xl md:text-4xl",
             onClick: handleStartGameClick,
           },
           about: {
             label: "About",
             type: "button",
-            onClick: handleAboutClick,
+            onClick: () => handleAboutModalClick(true),
+            textCls: "text-2xl sm:text-3xl md:text-4xl",
           },
         },
         gameLevelMenu: {
@@ -104,7 +111,8 @@ const useMainMenuSetup = () => {
           play: {
             label: "Play",
             type: "button",
-            btnCls: "mt-3 text-2xl sm:text-3xl md:text-4xl",
+            btnCls: "mt-3",
+            textCls: "text-2xl sm:text-3xl md:text-4xl",
             onClick: handlePlayGameClick,
           },
         },
@@ -115,10 +123,34 @@ const useMainMenuSetup = () => {
     [selectedGameLevel]
   );
 
+  const getAboutModalContentSet = (): MCGameUIPropsList => {
+    return [
+      {
+        label: "About",
+        type: "headline",
+        size: "large",
+      },
+      {
+        label:
+          "This is a memory game. The objective of the game is to find all the matching pairs of cards before time ends.",
+        type: "paragraph",
+        size: "small",
+      },
+      {
+        label: "©2024 Made by Emerson Rojas.",
+        type: "paragraph",
+        size: "small",
+      },
+    ];
+  };
+
   return {
     currentMenu,
     onNextMenu,
     getMainMenuContentSet,
+    showAboutModal,
+    getAboutModalContentSet,
+    handleAboutModalClick,
   };
 };
 
