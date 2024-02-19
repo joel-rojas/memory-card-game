@@ -114,6 +114,7 @@ export interface MCGameTextProps
 export type MCGameTextSizes = "small" | "medium" | "large";
 
 export enum MCGameRoutePath {
+  ANYTHING = "*",
   HOME = "/",
   PLAY = "/play",
 }
