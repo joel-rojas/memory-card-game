@@ -10,12 +10,13 @@ import {
   MCGameProgressiveMenuKeys,
   MCGameUIPropsList,
 } from "@config";
-import { useAppContext } from "@contexts";
-import { MCActionType } from "@store";
+import { useAppContext, useGameContext } from "@contexts";
+import { MCActionType, MCGameActionType } from "@store";
 
 const useMainMenuSetup = () => {
   const navigate = useNavigate();
   const { dispatch } = useAppContext();
+  const { dispatch: gameDispatch } = useGameContext();
   const [showAboutModal, setShowAboutModal] = React.useState(false);
   const [currentMenu, setCurrentMenu] =
     React.useState<MCGameMainMenuContentKeys>("startGameMenu");
@@ -47,6 +48,13 @@ const useMainMenuSetup = () => {
   };
 
   const handlePlayGameClick = () => {
+    dispatch({
+      type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
+      payload: "inProgress",
+    });
+    gameDispatch({
+      type: MCGameActionType.START_DECK,
+    });
     navigate(MCGameRoutePath.PLAY);
   };
 

@@ -30,6 +30,9 @@ function determineGameProgress(
     }
     return "inProgress";
   }
+  if (status === "win" || status === "lose") {
+    return status;
+  }
   return "idle";
 }
 
@@ -63,7 +66,7 @@ export function appReducer(state: MCAppState, action: MCAppAction): MCAppState {
         gameProgress: determineGameProgress(state.gameProgress, cardDeck, countdown),
       };
     }
-    case MCActionType.RESET_GAME: {
+    case MCActionType.CLEAR_GAME: {
       return { ...initialState };
     }
     default:

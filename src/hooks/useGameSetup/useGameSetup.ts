@@ -50,10 +50,6 @@ const useGameSetup = () => {
     gameProgress === "win"
       ? gameDispatch({ type: MCGameActionType.START_DECK })
       : gameDispatch({ type: MCGameActionType.RESET_DECK });
-    appDispatch({
-      type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
-      payload: "idle",
-    });
     setCountdown(gameLevel.countdown);
     setShowGameModal({ ...showGameModal, isShown: false });
   };
@@ -69,8 +65,8 @@ const useGameSetup = () => {
   };
 
   const handleMainMenuClick = () => {
-    appDispatch({ type: MCActionType.RESET_GAME });
-    gameDispatch({ type: MCGameActionType.START_DECK });
+    appDispatch({ type: MCActionType.CLEAR_GAME });
+    gameDispatch({ type: MCGameActionType.CLEAR_GAME });
     navigate(MCGameRoutePath.HOME);
     setShowGameModal({ ...showGameModal, isShown: false });
   };
@@ -134,15 +130,6 @@ const useGameSetup = () => {
     }
   };
 
-  // TODO: Refactor this side effect to generate deck once a game is started
-  React.useLayoutEffect(() => {
-    cardDeck.length === 0 &&
-      gameDispatch({
-        type: MCGameActionType.START_DECK,
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDeck]);
-
   // Init and process game countdown timer
   React.useEffect(() => {
     let timerId: NodeJS.Timeout | null = null;
@@ -201,10 +188,6 @@ const useGameSetup = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState.cardsShown.counter]);
 
-  // TODO: Temporary log to check game status
-  React.useEffect(() => {
-    console.log("GAME PROGRESS", appState.gameProgress);
-  }, [appState]);
 
   return {
     state: gameState,
