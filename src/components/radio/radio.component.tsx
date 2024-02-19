@@ -21,8 +21,11 @@ const RadioButton: React.FC<MCGameRadioButtonProps> = ({
         onChange={onChange}
       ></input>
 
-      <label htmlFor={`${name}_${value}`} className="w-full text-xl cursor-pointer">
-        <span className="pr-1">{checked ? '•' : <>&nbsp;</>}</span>
+      <label
+        htmlFor={`${name}_${value}`}
+        className="w-full text-md sm:text-xl md:text-2xl lg:text-3xl cursor-pointer"
+      >
+        <span className="pr-1">{checked ? "•" : <>&nbsp;</>}</span>
         {label}
       </label>
     </div>
