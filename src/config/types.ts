@@ -50,7 +50,12 @@ export type MCGameModalType = {
   isShown: boolean;
 };
 
-export type MCGameUITypes = "button" | "headline" | "radio-group" | "radio";
+export type MCGameUITypes =
+  | "button"
+  | "headline"
+  | "paragraph"
+  | "radio-group"
+  | "radio";
 
 export type MCGameChoosenUIType<T> = T extends MCGameUITypes ? T : never;
 
@@ -59,7 +64,7 @@ export type MCGamePropsSet<T> = T;
 export type MCGameCurrentUIProps =
   | MCGamePropsSet<MCGameRadioGroupProps>
   | MCGamePropsSet<MCGameButtonProps>
-  | MCGamePropsSet<MCGameHeadlineProps>;
+  | MCGamePropsSet<MCGameTextProps>;
 
 export type MCGameUIPropsList = MCGameCurrentUIProps[];
 
@@ -98,12 +103,15 @@ export interface MCGameButtonProps
   extends MCGameGenericUIInputCmpProps<"button"> {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   btnCls?: string;
+  textCls?: string;
 }
 
-export interface MCGameHeadlineProps
-  extends MCGameGenericUIInputCmpProps<"headline"> {
-  size: "small" | "medium" | "large";
+export interface MCGameTextProps
+  extends MCGameGenericUIInputCmpProps<"headline" | "paragraph"> {
+  size: MCGameTextSizes;
 }
+
+export type MCGameTextSizes = "small" | "medium" | "large";
 
 export enum MCGameRoutePath {
   HOME = "/",
@@ -118,7 +126,9 @@ export type MCGameMenuKeys =
 
 export type MCGameMainMenuContentKeys = "startGameMenu" | "gameLevelMenu";
 
-export type MCGameProgressiveMenuKeys = MCGameStartGameMenuKeys | MCGamePlayMenuKeys;
+export type MCGameProgressiveMenuKeys =
+  | MCGameStartGameMenuKeys
+  | MCGamePlayMenuKeys;
 
 export type MCGameStartGameMenuKeys = "startGame" | "about";
 

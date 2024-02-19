@@ -8,4 +8,4 @@ export { default as RadioButton } from "./radio";
 export { default as RadioGroup } from "./radio-group";
 export { default as Page } from "./page";
 export { default as Modal } from "./modal";
-export { default as Headline} from './headline';
+export { default as Text} from './text';

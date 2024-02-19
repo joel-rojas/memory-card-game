@@ -1,7 +1,7 @@
 import React from "react";
 
 import { MCGameUIPropsList, MCGameCurrentUIProps } from "@config";
-import { Button, Headline, RadioGroup } from "@components";
+import { Button, Text, RadioGroup } from "@components";
 
 interface MenuContentProps {
   contentList: MCGameUIPropsList;
@@ -17,8 +17,9 @@ const MenuContent: React.FC<MenuContentProps> = ({
     const key = `${child.type}-${child.label}`;
     switch (child.type) {
       case "headline":
+      case 'paragraph':
         return (
-          <Headline
+          <Text
             type={child.type}
             key={key}
             size={child.size}
@@ -33,6 +34,7 @@ const MenuContent: React.FC<MenuContentProps> = ({
             label={child.label}
             btnCls={child.btnCls}
             onClick={child.onClick}
+            textCls={child.textCls}
           />
         );
       case "radio-group":
