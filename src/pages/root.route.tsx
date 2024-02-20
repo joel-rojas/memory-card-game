@@ -1,15 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 
 import { Home, Play } from "@pages";
-import { useAppContext, useGameContext } from "@contexts";
 import { MCGameRoutePath } from "@config";
+import { useNextRoutePathByState } from "@hooks";
 import GuardRoute from "./guard.route";
 
 const Root = () => {
-  const { state } = useGameContext();
-  const { state: appState } = useAppContext();
-  const { gameProgress } = appState;
-  const { cardDeck } = state;
+  const isAllowed = useNextRoutePathByState();
   return (
     <Routes>
       <Route path={MCGameRoutePath.HOME} element={<Home />} />
@@ -17,7 +14,7 @@ const Root = () => {
         path={MCGameRoutePath.PLAY}
         element={
           <GuardRoute
-            isPageAllowed={gameProgress !== "idle" && cardDeck.length > 0}
+            isPageAllowed={isAllowed}
           >
             <Play />
           </GuardRoute>

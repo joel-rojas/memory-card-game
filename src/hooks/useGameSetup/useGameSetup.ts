@@ -50,6 +50,10 @@ const useGameSetup = () => {
     gameProgress === "win"
       ? gameDispatch({ type: MCGameActionType.START_DECK })
       : gameDispatch({ type: MCGameActionType.RESET_DECK });
+    appDispatch({
+      type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
+      payload: "inProgress",
+    });
     setCountdown(gameLevel.countdown);
     setShowGameModal({ ...showGameModal, isShown: false });
   };
@@ -121,7 +125,9 @@ const useGameSetup = () => {
           {
             ...contentPropsMap.reset,
             label:
-              gameProgress === "win" ? "Restart" : contentPropsMap?.reset?.label,
+              gameProgress === "win"
+                ? "Restart"
+                : contentPropsMap?.reset?.label,
           },
           contentPropsMap.mainMenu,
         ] as MCGameUIPropsList;
@@ -187,7 +193,6 @@ const useGameSetup = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState.cardsShown.counter]);
-
 
   return {
     state: gameState,
