@@ -1,13 +1,26 @@
 import React, { useReducer } from "react";
 
-import { AppContext } from "@contexts/app-context";
+import { useSessionStorage } from "@hooks";
+import { AppContext } from "@contexts";
 import { appReducer, initialState } from "@store";
-import { MCSingleComponentProps } from "@config";
+import { MCAppState, MCSingleComponentProps } from "@config";
 
 const AppProvider: React.FC<MCSingleComponentProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(appReducer, { ...initialState });
+  const [appStateStorage] = useSessionStorage("appState", initialState) as [
+    MCAppState
+  ];
+
+  const [state, dispatch] = useReducer(appReducer, {
+    ...appStateStorage,
+  });
+
+  const contextValue = React.useMemo(
+    () => ({ state, dispatch }),
+    [state, dispatch]
+  );
+
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
+    <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>
   );
