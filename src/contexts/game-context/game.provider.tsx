@@ -6,7 +6,7 @@ import { gameReducer, gameInitialState } from "@store";
 import { useSessionStorage } from "@hooks";
 
 const GameProvider: React.FC<MCSingleComponentProps> = ({ children }) => {
-  const [cardDeckStorage] = useSessionStorage("cardDeck", gameInitialState) as [
+  const [cardDeckStorage] = useSessionStorage("cardDeck", gameInitialState.cardDeck) as [
     MCGameCardDeck
   ];
   const [state, dispatch] = useReducer(gameReducer, {
