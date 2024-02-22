@@ -3,20 +3,25 @@ import React from "react";
 import { useSessionStorage } from "@hooks";
 import { useAppContext, useGameContext } from "@contexts";
 import { MCAppState, MCGameCardDeck, MCGameRoutePath } from "@config";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MCActionType, MCGameActionType } from "@store";
 
 type RoutePathConfig = {
   isAllowed: boolean;
   runOnce: boolean;
+  validPath: boolean;
 };
 
 const useNextRoutePathByState = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [routePathConfig, setRoutePathConfig] = React.useState<RoutePathConfig>(
     {
       isAllowed: false,
       runOnce: true,
+      validPath: Object.values(MCGameRoutePath).includes(
+        location.pathname as MCGameRoutePath
+      ),
     }
   );
   const { state: appState, dispatch: appDispatch } = useAppContext();
@@ -57,7 +62,11 @@ const useNextRoutePathByState = () => {
   // Reset the game status, progress, and deck once the game is allowed to be played
   // and if the app was refreshed
   React.useLayoutEffect(() => {
-    if (routePathConfig.isAllowed && routePathConfig.runOnce) {
+    if (
+      routePathConfig.isAllowed &&
+      routePathConfig.runOnce &&
+      routePathConfig.validPath
+    ) {
       appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "new" });
       appDispatch({
         type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
@@ -69,12 +78,25 @@ const useNextRoutePathByState = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routePathConfig]);
 
+  React.useLayoutEffect(() => {
+    setRoutePathConfig((prev) => ({
+      ...prev,
+      validPath: Object.values(MCGameRoutePath).includes(
+        location.pathname as MCGameRoutePath
+      ),
+    }));
+  }, [location.pathname]);
+
   // Redirect to the next route path
   React.useEffect(() => {
-    if (routePathConfig.isAllowed) {
-      navigate(MCGameRoutePath.PLAY);
+    if (routePathConfig.validPath) {
+      if (routePathConfig.isAllowed) {
+        navigate(MCGameRoutePath.PLAY);
+      } else {
+        navigate(MCGameRoutePath.HOME);
+      }
     } else {
-      navigate(MCGameRoutePath.HOME);
+      throw new Error("Invalid route path");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routePathConfig]);
