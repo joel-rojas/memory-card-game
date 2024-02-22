@@ -37,9 +37,11 @@ const useNextRoutePathByState = () => {
   }, [appState]);
 
   React.useLayoutEffect(() => {
-    setCardDeckStorage(cardDeck);
+    cardDeck.length > 0 &&
+      appState.gameStatus === "new" &&
+      setCardDeckStorage(cardDeck);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDeck]);
+  }, [appState, cardDeck]);
 
   // Check if the game is allowed to be played based on the appState and cardDeck
   React.useLayoutEffect(() => {
