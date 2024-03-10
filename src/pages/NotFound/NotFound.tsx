@@ -1,16 +1,20 @@
 import React from "react";
 import { useRouteError } from "react-router-dom";
 
-import { Body, Headline, Page } from "@components";
+import { Body, Text, Page } from "@components";
 
 const NotFound = () => {
   useRouteError();
 
   return (
     <Page>
-      <Body fullyCentered>
-        <Headline>Oops!! Page is not found!</Headline>
-        <Headline clsList="text-xl">Go back and start a new game!</Headline>
+      <Body fullyCentered asColumn asContainer>
+        <Text size="large" type="headline" label="Oops!! Page is not found!" />
+        <Text
+          size="small"
+          type="headline"
+          label="Go back and start a new game!"
+        />
       </Body>
     </Page>
   );

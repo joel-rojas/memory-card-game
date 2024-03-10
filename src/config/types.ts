@@ -2,9 +2,12 @@ export interface MCSingleComponentProps {
   children: React.ReactNode;
 }
 
+export type MCGameLevelKeys = "easy" | "medium" | "hard";
+
+export type MCGameLevelCountdown = 60 | 40 | 20;
 export interface MCGameLevel {
-  label: "easy" | "normal" | "hard";
-  countdown: 45 | 30 | 15;
+  label: MCGameLevelKeys;
+  countdown: MCGameLevelCountdown;
 }
 
 export type MCGameCard = {
@@ -47,15 +50,21 @@ export type MCGameModalType = {
   isShown: boolean;
 };
 
-export type MCGameUITypes = "button" | "title";
+export type MCGameUITypes =
+  | "button"
+  | "headline"
+  | "paragraph"
+  | "radio-group"
+  | "radio";
 
 export type MCGameChoosenUIType<T> = T extends MCGameUITypes ? T : never;
 
 export type MCGamePropsSet<T> = T;
 
 export type MCGameCurrentUIProps =
+  | MCGamePropsSet<MCGameRadioGroupProps>
   | MCGamePropsSet<MCGameButtonProps>
-  | MCGamePropsSet<MCGameHeadlineProps>;
+  | MCGamePropsSet<MCGameTextProps>;
 
 export type MCGameUIPropsList = MCGameCurrentUIProps[];
 
@@ -65,27 +74,63 @@ export type MCGameCurrentModalActionKeys =
   | "reset"
   | "mainMenu";
 
-export type MCGameUISetPropsMap = {
-  [P in keyof Record<
-    MCGameCurrentModalActionKeys,
-    unknown
-  >]: MCGameCurrentUIProps;
+export type MCGameUISetPropsMap<T extends MCGameMenuKeys, U> = {
+  [P in keyof Record<T, string>]?: U;
 };
 
-export interface MCGameButtonProps {
-  text: string;
-  type: MCGameChoosenUIType<"button">;
+export interface MCGameGenericUIInputCmpProps<T> {
+  type: MCGameChoosenUIType<T>;
+  label?: string;
+  name?: string;
+}
+
+export interface MCGameRadioGroupProps
+  extends MCGameGenericUIInputCmpProps<"radio-group"> {
+  options:
+    | MCGameRadioButtonProps[]
+    | React.ReactElement<MCGameRadioButtonProps>[];
+}
+
+export interface MCGameRadioButtonProps
+  extends MCGameGenericUIInputCmpProps<"radio"> {
+  name: string;
+  value: MCGameLevelKeys;
+  checked: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface MCGameButtonProps
+  extends MCGameGenericUIInputCmpProps<"button"> {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   btnCls?: string;
-};
+  textCls?: string;
+}
 
-export interface MCGameHeadlineProps {
-  text: string;
-  type: MCGameChoosenUIType<"title">;
-  size: "large" | "x-large";
-};
+export interface MCGameTextProps
+  extends MCGameGenericUIInputCmpProps<"headline" | "paragraph"> {
+  size: MCGameTextSizes;
+}
+
+export type MCGameTextSizes = "small" | "medium" | "large" | "x-large";
 
 export enum MCGameRoutePath {
-  HOME = '/',
-  PLAY = '/play',
-};
+  ANYTHING = "*",
+  HOME = "/",
+  PLAY = "/play",
+}
+
+export type MCGameMenuKeys =
+  | MCGameCurrentModalActionKeys
+  | MCGameMainMenuContentKeys
+  | MCGameStartGameMenuKeys
+  | MCGamePlayMenuKeys;
+
+export type MCGameMainMenuContentKeys = "startGameMenu" | "gameLevelMenu";
+
+export type MCGameProgressiveMenuKeys =
+  | MCGameStartGameMenuKeys
+  | MCGamePlayMenuKeys;
+
+export type MCGameStartGameMenuKeys = "startGame" | "about";
+
+export type MCGamePlayMenuKeys = "backToStart" | "gameLevel" | "play";

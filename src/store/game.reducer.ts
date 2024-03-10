@@ -189,6 +189,9 @@ export function gameReducer(
         cardDeck: shuffleDeck(resetDeck(state.cardDeck)),
       };
     }
+    case MCGameActionType.CLEAR_GAME: {
+      return gameInitialState;
+    }
     default:
       return state;
   }

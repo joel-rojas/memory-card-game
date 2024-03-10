@@ -14,14 +14,22 @@ const Card: React.FC<CardProps> = ({ card, onTap }) => {
   const { id, isHidden } = card;
   return (
     <div
-      className={`${
+      className={`w-16 sm:w-28 md:w-36 lg:w-48 h-16 sm:h-28 md:h-36 lg:h-48 ${
         isHidden ? "cover-card" : "shadow shadow-gray-400"
-      } w-16 sm:w-28 md:w-36 lg:w-48 p-1 rounded-sm cursor-pointer`}
+      } relative rounded-sm cursor-pointer `}
       onClick={(ev) => onTap(ev, card)}
     >
       <img
-        className="select-none pointer-events-none"
-        src={require(`@assets/${isHidden ? "cover_card" : id}.png`)}
+        className={`p-1 ${
+          isHidden ? "visible" : "invisible"
+        } absolute select-none pointer-events-none`}
+        src={require(`@assets/cover_card.png`)}
+      />
+      <img
+        className={`p-1 ${
+          isHidden ? "invisible" : "visible"
+        } absolute select-none pointer-events-none`}
+        src={require(`@assets/${id}.png`)}
       />
     </div>
   );

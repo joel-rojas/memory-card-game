@@ -5,6 +5,7 @@ export enum MCGameActionType {
   MATCHED_CARDS = "Matched Cards",
   SHOW_CARD = "Show Card",
   RESET_DECK = "Reset Deck",
+  CLEAR_GAME = "Clear Game",
 }
 
 export type MCGameAction = {
