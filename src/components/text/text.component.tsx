@@ -9,6 +9,8 @@ const Text: React.FC<MCGameTextProps> = ({ label, size, type }) => {
   ) => {
     if (type === "headline") {
       switch (size) {
+        case "x-large":
+          return "text-3xl sm:text-5xl md:text-7xl";
         case "large":
           return "text-2xl sm:text-4xl md:text-6xl";
         case "medium":

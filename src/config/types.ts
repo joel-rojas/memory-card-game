@@ -111,7 +111,7 @@ export interface MCGameTextProps
   size: MCGameTextSizes;
 }
 
-export type MCGameTextSizes = "small" | "medium" | "large";
+export type MCGameTextSizes = "small" | "medium" | "large" | "x-large";
 
 export enum MCGameRoutePath {
   ANYTHING = "*",
