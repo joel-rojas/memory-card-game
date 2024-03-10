@@ -5,6 +5,9 @@ import {
   MCGameState,
   MCGameSelectedCards,
   MCGameCardsShown,
+  MCGameMaxCardsInDeck,
+  getInitialRandomList,
+  shuffleDeck,
 } from "@config";
 
 export const gameInitialState: MCGameState = {
@@ -15,24 +18,9 @@ export const gameInitialState: MCGameState = {
   },
 };
 
-function getRandomCharCode(): number {
-  const MAX_AVAILABLE_CARDS = 16;
-  const INITIAL_CHAR_CODE = 97;
-  return INITIAL_CHAR_CODE + Math.floor(Math.random() * MAX_AVAILABLE_CARDS);
-};
-
-function getInitialRandomList(count: number): string[] {
-  let nums = new Set<MCGameCard["id"]>();
-  while (nums.size < count) {
-    const randomCard = `${String.fromCharCode(getRandomCharCode())}_card`;
-    !nums.has(randomCard) && nums.add(randomCard);
-  }
-  return Array.from(nums);
-};
-
 function generateDeck<T extends MCGameCardDeck>(): T {
-  const MAX_CARDS = 10;
-  const randomList = getInitialRandomList(MAX_CARDS);
+  const MAX_CARDS: MCGameMaxCardsInDeck = 10;
+  const randomList = getInitialRandomList<MCGameCard["id"]>(MAX_CARDS);
   const list = [];
   let i = 0;
   let count = 0;
@@ -50,16 +38,8 @@ function generateDeck<T extends MCGameCardDeck>(): T {
     i++;
   }
   return list as T;
-};
-
-function shuffleDeck<T extends MCGameCardDeck>(cardDeck: T): T {
-  const initialIndex = cardDeck.length - 1;
-  for (let i = initialIndex; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [cardDeck[i], cardDeck[j]] = [cardDeck[j], cardDeck[i]];
-  }
-  return cardDeck as T;
 }
+
 function changeCardHiddenStatus({
   list,
   cards,
@@ -128,7 +108,7 @@ export function gameReducer(
     case MCGameActionType.START_DECK: {
       return {
         ...gameInitialState,
-        cardDeck: shuffleDeck(generateDeck()),
+        cardDeck: shuffleDeck<MCGameCardDeck>(generateDeck()),
       };
     }
     case MCGameActionType.MATCHED_CARDS: {
@@ -186,7 +166,9 @@ export function gameReducer(
     case MCGameActionType.RESET_DECK: {
       return {
         ...gameInitialState,
-        cardDeck: shuffleDeck(resetDeck(state.cardDeck)),
+        cardDeck: shuffleDeck<MCGameCardDeck>(
+          resetDeck(state.cardDeck)
+        ),
       };
     }
     case MCGameActionType.CLEAR_GAME: {
