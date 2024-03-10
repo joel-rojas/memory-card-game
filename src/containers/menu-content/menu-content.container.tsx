@@ -12,12 +12,11 @@ const MenuContent: React.FC<MenuContentProps> = ({
   contentList,
   fullWidth = false,
 }): React.ReactElement => {
-
   const renderChild = (child: MCGameCurrentUIProps) => {
     const key = `${child.type}-${child.label}`;
     switch (child.type) {
       case "headline":
-      case 'paragraph':
+      case "paragraph":
         return (
           <Text
             type={child.type}
