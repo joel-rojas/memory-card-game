@@ -110,7 +110,7 @@ const useGameSetup = () => {
     switch (type) {
       case "pause":
         return [
-          { ...contentPropsMap.title, text: "Game Paused" },
+          { ...contentPropsMap.title, label: "Game Paused" },
           contentPropsMap.resume,
           contentPropsMap.reset,
           contentPropsMap.mainMenu,
