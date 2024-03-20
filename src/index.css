@@ -21,4 +21,7 @@
   .cover-card {
     background-color: #E02D25;
   }
+  .card.exiting {
+    visibility: hidden;
+  }
 }

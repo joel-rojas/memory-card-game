@@ -9,6 +9,9 @@ import {
   MCGameCurrentUIProps,
   MCGameProgressiveMenuKeys,
   MCGameUIPropsList,
+  shuffleDeck,
+  getInitialRandomList,
+  MCGameMaxAvailableCards,
 } from "@config";
 import { useAppContext, useGameContext } from "@contexts";
 import { MCActionType, MCGameActionType } from "@store";
@@ -25,6 +28,11 @@ const useMainMenuSetup = () => {
   };
   const [selectedGameLevel, setSelectedGameLevel] =
     React.useState<MCGameLevelKeys>("easy");
+
+  const cardDeck = React.useMemo(
+    () => shuffleDeck(getInitialRandomList(16 as MCGameMaxAvailableCards)),
+    []
+  );
 
   const handleStartGameClick = () => {};
   const handleGoBackClick = () => {};
@@ -159,6 +167,7 @@ const useMainMenuSetup = () => {
     showAboutModal,
     getAboutModalContentSet,
     handleAboutModalClick,
+    cardDeck,
   };
 };
 
