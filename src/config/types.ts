@@ -2,7 +2,13 @@ export interface MCSingleComponentProps {
   children: React.ReactNode;
 }
 
+export type MCGameMaxCardsInDeck = 10;
+
+export type MCGameMaxAvailableCards = 16;
+
 export type MCGameLevelKeys = "easy" | "medium" | "hard";
+
+export type MCAppScreenSizes = "mobile" | "tablet" | "desktop";
 
 export type MCGameLevelCountdown = 60 | 40 | 20;
 export interface MCGameLevel {
