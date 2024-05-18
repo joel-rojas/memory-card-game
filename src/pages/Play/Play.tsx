@@ -11,7 +11,7 @@ import {
   Page,
 } from "@components";
 import { useGameSetup } from "@hooks";
-import { ModalContent } from "@containers";
+import { MenuContent } from "@containers";
 
 export default function Play() {
   const {
@@ -25,10 +25,10 @@ export default function Play() {
   return (
     <Page>
       <Modal isOpen={showGameModal.isShown}>
-        <ModalContent contentList={getModalContentProps(showGameModal.type)} />
+        <MenuContent contentList={getModalContentProps(showGameModal.type)} />
       </Modal>
       <Header>
-        <Button text="Pause" onClick={handlePauseGameClick} />
+        <Button type="button" label="Pause" onClick={handlePauseGameClick} />
         <CountDown>{countdown}</CountDown>
       </Header>
       <Body>

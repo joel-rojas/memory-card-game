@@ -6,7 +6,7 @@ export enum MCActionType {
   CHANGE_PROGRESS_BY_VALUE = "Change Game Progress By Value",
   CHANGE_STATUS = "Change Game Status",
   CHANGE_LEVEL = "Change Game Level",
-  RESET_GAME = "Reset Game",
+  CLEAR_GAME = "Clear Game",
 }
 
 export type MCAppAction = {

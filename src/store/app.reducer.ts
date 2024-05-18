@@ -2,7 +2,7 @@ import { MCActionType, MCAppAction, MCAppActionCustomPayload } from "@store";
 import { MCAppState, MCGameCardDeck, MCGameLevel, MCGameProgress } from "@config";
 
 export const initialState: MCAppState = {
-  gameLevel: { label: "easy", countdown: 45 },
+  gameLevel: { label: "easy", countdown: 60 },
   gameStatus: "new",
   gameProgress: 'idle',
 };
@@ -29,6 +29,9 @@ function determineGameProgress(
       return "lose";
     }
     return "inProgress";
+  }
+  if (status === "win" || status === "lose") {
+    return status;
   }
   return "idle";
 }
@@ -63,7 +66,7 @@ export function appReducer(state: MCAppState, action: MCAppAction): MCAppState {
         gameProgress: determineGameProgress(state.gameProgress, cardDeck, countdown),
       };
     }
-    case MCActionType.RESET_GAME: {
+    case MCActionType.CLEAR_GAME: {
       return { ...initialState };
     }
     default:

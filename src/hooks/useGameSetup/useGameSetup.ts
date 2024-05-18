@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppContext, useGameContext } from "@contexts";
 import {
   MCGameCard,
+  MCGameCurrentModalActionKeys,
+  MCGameCurrentUIProps,
   MCGameModalType,
   MCGameRoutePath,
   MCGameUIPropsList,
@@ -50,7 +52,7 @@ const useGameSetup = () => {
       : gameDispatch({ type: MCGameActionType.RESET_DECK });
     appDispatch({
       type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
-      payload: "idle",
+      payload: "inProgress",
     });
     setCountdown(gameLevel.countdown);
     setShowGameModal({ ...showGameModal, isShown: false });
@@ -67,8 +69,8 @@ const useGameSetup = () => {
   };
 
   const handleMainMenuClick = () => {
-    appDispatch({ type: MCActionType.RESET_GAME });
-    gameDispatch({ type: MCGameActionType.START_DECK });
+    appDispatch({ type: MCActionType.CLEAR_GAME });
+    gameDispatch({ type: MCGameActionType.CLEAR_GAME });
     navigate(MCGameRoutePath.HOME);
     setShowGameModal({ ...showGameModal, isShown: false });
   };
@@ -80,24 +82,27 @@ const useGameSetup = () => {
   const getModalContentProps = (
     type: MCGameModalType["type"]
   ): MCGameUIPropsList => {
-    const contentPropsMap: MCGameUISetPropsMap = {
+    const contentPropsMap: MCGameUISetPropsMap<
+      MCGameCurrentModalActionKeys,
+      MCGameCurrentUIProps
+    > = {
       title: {
-        text: "",
-        type: "title",
+        label: "",
+        type: "headline",
         size: "large",
       },
       resume: {
-        text: "Resume",
+        label: "Resume",
         type: "button",
         onClick: handleResumeGameClick,
       },
       reset: {
-        text: "Reset",
+        label: "Reset",
         type: "button",
         onClick: handleResetGameClick,
       },
       mainMenu: {
-        text: "Main Menu",
+        label: "Main Menu",
         type: "button",
         onClick: handleMainMenuClick,
       },
@@ -105,7 +110,7 @@ const useGameSetup = () => {
     switch (type) {
       case "pause":
         return [
-          { ...contentPropsMap.title, text: "Game Paused" },
+          { ...contentPropsMap.title, label: "Game Paused" },
           contentPropsMap.resume,
           contentPropsMap.reset,
           contentPropsMap.mainMenu,
@@ -115,12 +120,14 @@ const useGameSetup = () => {
           {
             ...contentPropsMap.title,
             size: "x-large",
-            text: gameProgress === "win" ? "You Win!" : "You Lose!",
+            label: gameProgress === "win" ? "You Win!" : "You Lose!",
           },
           {
             ...contentPropsMap.reset,
-            text:
-              gameProgress === "win" ? "Restart" : contentPropsMap.reset.text,
+            label:
+              gameProgress === "win"
+                ? "Restart"
+                : contentPropsMap?.reset?.label,
           },
           contentPropsMap.mainMenu,
         ] as MCGameUIPropsList;
@@ -128,15 +135,6 @@ const useGameSetup = () => {
         return [] as MCGameUIPropsList;
     }
   };
-
-  // TODO: Refactor this side effect to generate deck once a game is started
-  React.useLayoutEffect(() => {
-    cardDeck.length === 0 &&
-      gameDispatch({
-        type: MCGameActionType.START_DECK,
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDeck]);
 
   // Init and process game countdown timer
   React.useEffect(() => {
@@ -195,11 +193,6 @@ const useGameSetup = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState.cardsShown.counter]);
-
-  // TODO: Temporary log to check game status
-  React.useEffect(() => {
-    console.log("GAME PROGRESS", appState.gameProgress);
-  }, [appState]);
 
   return {
     state: gameState,
