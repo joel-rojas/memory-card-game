@@ -10,15 +10,13 @@ import {
   MCGameProgressiveMenuKeys,
   MCGameUIPropsList,
   shuffleDeck,
-  getInitialRandomList,
-  MCGameMaxAvailableCards,
 } from "@config";
 import { useAppContext, useGameContext } from "@contexts";
 import { MCActionType, MCGameActionType } from "@store";
 
 const useMainMenuSetup = () => {
   const navigate = useNavigate();
-  const { dispatch } = useAppContext();
+  const { state: appState, dispatch } = useAppContext();
   const { dispatch: gameDispatch } = useGameContext();
   const [showAboutModal, setShowAboutModal] = React.useState(false);
   const [currentMenu, setCurrentMenu] =
@@ -30,8 +28,14 @@ const useMainMenuSetup = () => {
     React.useState<MCGameLevelKeys>("easy");
 
   const cardDeck = React.useMemo(
-    () => shuffleDeck(getInitialRandomList(16 as MCGameMaxAvailableCards)),
-    []
+    // () => shuffleDeck(getInitialRandomList(16 as MCGameMaxAvailableCards)),
+    () =>
+      shuffleDeck(
+        appState.imageAssets.filter(
+          (asset) => !asset.imgId.includes("cover_card")
+        )
+      ),
+    [appState.imageAssets]
   );
 
   const handleStartGameClick = () => {};
