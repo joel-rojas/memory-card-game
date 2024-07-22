@@ -1,10 +1,17 @@
 import { MCActionType, MCAppAction, MCAppActionCustomPayload } from "@store";
-import { MCAppState, MCGameCardDeck, MCGameLevel, MCGameProgress } from "@config";
+import {
+  MCAppState,
+  MCGameCardDeck,
+  MCGameLevel,
+  MCGameProgress,
+  MCAppPreRenderedImgAsset,
+} from "@config";
 
 export const initialState: MCAppState = {
   gameLevel: { label: "easy", countdown: 60 },
   gameStatus: "new",
-  gameProgress: 'idle',
+  gameProgress: "idle",
+  imageAssets: [],
 };
 
 function determineCardListMatches(cardDeck: MCGameCardDeck): boolean {
@@ -56,18 +63,28 @@ export function appReducer(state: MCAppState, action: MCAppAction): MCAppState {
       return {
         ...state,
         gameProgress: action.payload as MCGameProgress,
-      }
+      };
     }
     case MCActionType.CHANGE_PROGRESS: {
       const { cardDeck, countdown } =
         action.payload as MCAppActionCustomPayload;
       return {
         ...state,
-        gameProgress: determineGameProgress(state.gameProgress, cardDeck, countdown),
+        gameProgress: determineGameProgress(
+          state.gameProgress,
+          cardDeck,
+          countdown
+        ),
+      };
+    }
+    case MCActionType.LOAD_ASSETS: {
+      return {
+        ...state,
+        imageAssets: action.payload as MCAppPreRenderedImgAsset[],
       };
     }
     case MCActionType.CLEAR_GAME: {
-      return { ...initialState };
+      return { ...initialState, imageAssets: state.imageAssets };
     }
     default:
       return state;

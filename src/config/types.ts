@@ -23,6 +23,11 @@ export type MCGameCard = {
   isMatched: boolean;
 };
 
+export type MCAppPreRenderedImgAsset = {
+  src: string;
+  imgId: string;
+};
+
 export type MCGameCardDeck = MCGameCard[];
 
 export type MCGameProgress = "idle" | "inProgress" | "lose" | "win";
@@ -33,6 +38,7 @@ export interface MCAppState {
   gameLevel: MCGameLevel;
   gameStatus: MCGameStatus;
   gameProgress: MCGameProgress;
+  imageAssets: MCAppPreRenderedImgAsset[];
 }
 
 export interface MCGameState {
