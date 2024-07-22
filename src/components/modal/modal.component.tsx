@@ -31,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({
 
   return isOpen ? (
     <div
-      className="fixed z-10 left-0 top-0 w-full h-full overflow-auto bg-black/90"
+      className="fixed z-50 left-0 top-0 w-full h-full overflow-auto bg-black/90"
       onClick={handleModalOnBackgroundClick}
     >
       <div

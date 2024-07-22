@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Page, Header, Body, Modal } from "@components";
-import { MenuContent, ProgressiveMenu } from "@containers";
+import { AnimationFrame, MenuContent, ProgressiveMenu } from "@containers";
 import { useMainMenuSetup } from "@hooks";
 import {
   MCGameButtonProps,
@@ -19,12 +19,14 @@ const Home = () => {
     showAboutModal,
     getAboutModalContentSet,
     handleAboutModalClick,
+    cardDeck,
   } = useMainMenuSetup();
+
   const renderMenu = React.useCallback(
     (
       currentStep: MCGameMainMenuContentKeys,
       nextMenu: (menu: MCGameMainMenuContentKeys) => void
-    ) => {
+    ): JSX.Element => {
       const upcomingMenu =
         currentStep === "startGameMenu" ? "gameLevelMenu" : "startGameMenu";
 
@@ -57,7 +59,9 @@ const Home = () => {
       >
         <MenuContent contentList={getAboutModalContentSet()} />
       </Modal>
-      <Header>Home</Header>
+      <Header flex={1}>
+        <AnimationFrame cardDeck={cardDeck} />
+      </Header>
       <Body asContainer>
         <ProgressiveMenu
           currentMenu={currentMenu}

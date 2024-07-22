@@ -2,7 +2,13 @@ export interface MCSingleComponentProps {
   children: React.ReactNode;
 }
 
+export type MCGameMaxCardsInDeck = 10;
+
+export type MCGameMaxAvailableCards = 16;
+
 export type MCGameLevelKeys = "easy" | "medium" | "hard";
+
+export type MCAppScreenSizes = "mobile" | "tablet" | "desktop";
 
 export type MCGameLevelCountdown = 60 | 40 | 20;
 export interface MCGameLevel {
@@ -17,6 +23,11 @@ export type MCGameCard = {
   isMatched: boolean;
 };
 
+export type MCAppPreRenderedImgAsset = {
+  src: string;
+  imgId: string;
+};
+
 export type MCGameCardDeck = MCGameCard[];
 
 export type MCGameProgress = "idle" | "inProgress" | "lose" | "win";
@@ -27,6 +38,7 @@ export interface MCAppState {
   gameLevel: MCGameLevel;
   gameStatus: MCGameStatus;
   gameProgress: MCGameProgress;
+  imageAssets: MCAppPreRenderedImgAsset[];
 }
 
 export interface MCGameState {

@@ -1,4 +1,10 @@
-import { MCGameLevel, MCGameStatus, MCGameCardDeck, MCGameProgress } from "@config";
+import {
+  MCGameLevel,
+  MCGameStatus,
+  MCGameCardDeck,
+  MCGameProgress,
+  MCAppPreRenderedImgAsset,
+} from "@config";
 
 export enum MCActionType {
   CHECK_STATUS = "Check Game Status",
@@ -7,6 +13,7 @@ export enum MCActionType {
   CHANGE_STATUS = "Change Game Status",
   CHANGE_LEVEL = "Change Game Level",
   CLEAR_GAME = "Clear Game",
+  LOAD_ASSETS = "Load Game Assets",
 }
 
 export type MCAppAction = {
@@ -23,6 +30,11 @@ export type MCAppActionPayload =
 export type MCAppActionCustomPayload = {
   cardDeck: MCGameCardDeck;
   countdown: number;
-}
+};
 
-export type MCAppActionCustomPayloads = MCAppActionCustomPayload | number;
+export type MCAppActionCustomPayloads =
+  | MCAppActionCustomPayload
+  | number
+  | MCAppPreRenderedImgAsset[];
+
+

@@ -12,6 +12,9 @@ type RoutePathConfig = {
   validPath: boolean;
 };
 
+const assets = require.context("@assets", true);
+const assetsList = assets.keys().map((asset) => assets(asset));
+
 const useNextRoutePathByState = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -78,6 +81,7 @@ const useNextRoutePathByState = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routePathConfig]);
 
+  // Check if the current route path is valid
   React.useLayoutEffect(() => {
     setRoutePathConfig((prev) => ({
       ...prev,
@@ -100,6 +104,22 @@ const useNextRoutePathByState = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routePathConfig]);
+
+  // Load the image assets to the appState
+  React.useEffect(() => {
+    if (assetsList.length > 0) {
+      const payload = assetsList.map((asset: string) => {
+        const assetId = asset!.split("/").pop();
+        const imgId = assetId!.split(".")[0];
+        return {
+          src: asset,
+          imgId,
+        };
+      });
+      appDispatch({ type: MCActionType.LOAD_ASSETS, payload });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assetsList]);
 
   return routePathConfig.isAllowed;
 };
