@@ -1,45 +1,79 @@
 import React from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { Flip } from "gsap/Flip";
 
 import { useWindowResize } from "@hooks";
+import { MCAppPreRenderedImgAsset } from "@config";
+
+type LayoutItemStatus = "entering" | "exiting";
 
 type LayoutItem = {
   index: number;
-  item: string;
+  item: MCAppPreRenderedImgAsset;
   position: { x: number; y: number };
+  status: LayoutItemStatus;
 };
 
 type Layout = {
   items: LayoutItem[];
-  state?: Flip.FlipState | null;
 };
 
-gsap.registerPlugin(Flip);
 
-const useAnimatedCardsFrame = (cardDeck: string[]) => {
+const useAnimatedCardsFrame = (cardDeck: MCAppPreRenderedImgAsset[]) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const timelineRef = React.useRef<gsap.core.Timeline>();
-  const [counter, setCounter] = React.useState(0);
-  const query = gsap.utils.selector(containerRef);
+  const [counter, setCounter] = React.useState(-1);
   const [layout, setLayout] = React.useState<Layout | null>(null);
   const screenDimensions = useWindowResize();
+
+  /**
+   * @description Calculate the image position
+   * @returns {object} - The x and y position of the image
+   */
+  const calculateImgPosition = React.useCallback(() => {
+    const container = containerRef.current!;
+    if (!container) return { x: 0, y: 0 };
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    const isMobile = screenDimensions.type === "mobile";
+    const defaultWidth = isMobile ? 224 : 112;
+    const img = container!.children[0]! as HTMLImageElement;
+    const imgWidth = !img ? defaultWidth : img.clientWidth;
+    if (containerWidth === 0 || containerHeight === 0 || imgWidth === 0) {
+      return { x: 0, y: 0 };
+    }
+    let x = Math.random() * containerWidth;
+    let y = Math.random() * containerHeight;
+    if (x + imgWidth / 2 > containerWidth) {
+      x -= (isMobile ? imgWidth * 2 : imgWidth);
+    }
+    if (y + imgWidth / 2 > containerHeight) {
+      y -= (isMobile ? imgWidth * 2 : imgWidth);
+    }
+    if (x < imgWidth / 2) {
+      x += imgWidth / 2;
+    }
+    if (y < imgWidth / 2) {
+      y = y + imgWidth / 2;
+    }
+    return { x, y };
+  }, [screenDimensions]);
 
   /**
    * @description Add a layout item to the layout
    * @param {number} index - The index of the card
    * @returns {LayoutItem} - The layout item
    */
-  const addLayoutItem = React.useCallback(
-    (index: number): LayoutItem => {
+  const setupLayoutItem = React.useCallback(
+    (params: Partial<LayoutItem>): LayoutItem => {
+      const {
+        index = 0,
+        item = cardDeck[index % cardDeck.length],
+        position = { x: 0, y: 0 },
+        status = "entering",
+      } = params;
       return {
         index,
-        item: cardDeck[index % cardDeck.length],
-        position: {
-          x: Math.random() * containerRef.current!.clientWidth,
-          y: Math.random() * containerRef.current!.clientHeight,
-        },
+        item,
+        position,
+        status,
       };
     },
     [cardDeck]
@@ -59,101 +93,66 @@ const useAnimatedCardsFrame = (cardDeck: string[]) => {
     return 1;
   }, [screenDimensions]);
 
-  /**
-   * @description Generate layout items based on the MAX_ITEMS
-   * @param {number} nextIdx - The next index to start from
-   * @returns {LayoutItem[]} - The layout items
-   */
-  const getLayoutItems = React.useCallback(
-    (nextIdx = 0): LayoutItem[] => {
-      return Array.from({ length: MAX_ITEMS }, (_, index) =>
-        addLayoutItem(index + nextIdx)
-      );
-    },
-    [MAX_ITEMS, addLayoutItem]
-  );
-
   // Initialize the layout
   React.useEffect(() => {
     if (!containerRef.current) return;
 
     if (layout === null && cardDeck.length > 0) {
       setLayout({
-        items: getLayoutItems(),
+        items: cardDeck.map((_, index) =>
+          setupLayoutItem({
+            index,
+            position: calculateImgPosition(),
+            status: "exiting",
+          })
+        ),
       });
+      setCounter(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layout, cardDeck]);
 
-  // Animate the cards using GSAP hook
-  useGSAP(
-    () => {
-      if (!containerRef.current) return;
-      if (!layout || (layout && !layout.state)) return;
-
-      timelineRef.current = Flip.from(layout!.state!, {
-        absolute: true,
-        ease: "power1.inOut",
-        targets: query(".cards, .card"),
-        simple: true,
-        scale: true,
-        onEnter: (elements) => {
-          return gsap.fromTo(
-            elements,
-            {
-              opacity: 0,
-              scale: 0,
-            },
-            {
-              duration: 0.5,
-              opacity: 1,
-              scale: 1,
-              delay: 0.2,
-            }
-          );
-        },
-        onLeave: (elements) => {
-          return gsap.to(elements, {
-            opacity: 0,
-            scale: 0,
-          });
-        },
-        onComplete: () => {
-          let cards = containerRef.current!;
-          cards?.appendChild(cards.lastChild!);
-        },
-      });
-    },
-    {
-      scope: containerRef,
-      dependencies: [layout, query, cardDeck],
-    }
-  );
-
-  // Update the layout every second
+  // Update the layout every second and a half
+  // to show the next set of cards
+  // and change positions of the exiting cards
   React.useEffect(() => {
-    if (!layout) return;
+    if (!layout || counter === -1) return;
 
     let timerId: NodeJS.Timer = setInterval(() => {
+      let currentIdx = counter;
       let nextIndex = counter + MAX_ITEMS - 1;
-      if (layout!.items.length >= cardDeck.length) {
-        nextIndex = 0;
+
+      if (currentIdx >= cardDeck.length - 1) {
+        currentIdx = 0;
+        nextIndex = MAX_ITEMS - 1;
+        setCounter(currentIdx);
       }
-      const state = Flip.getState(query(".cards, .card"));
 
       setLayout({
-        state,
-        items: getLayoutItems(nextIndex),
+        items: layout!.items.map((item) => {
+          if (item.index === currentIdx && currentIdx <= nextIndex) {
+            currentIdx += 1;
+            return setupLayoutItem({
+              ...item,
+              status: "entering",
+            });
+          }
+          return setupLayoutItem({
+            ...item,
+            position: calculateImgPosition(),
+            status: "exiting",
+          });
+        }),
       } as Layout);
 
       setCounter((prev) => prev + MAX_ITEMS);
-    }, 1000);
+    }, 1500);
 
     return () => {
       clearInterval(timerId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDeck, query, MAX_ITEMS]);
+  }, [cardDeck, MAX_ITEMS, counter]);
 
   return {
     containerRef,
