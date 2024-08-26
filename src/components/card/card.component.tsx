@@ -26,10 +26,10 @@ const Card: React.FC<CardProps> = ({ card, onTap }) => {
         src={require(`@assets/cover_card.png`)}
       />
       <img
-        className={`p-1 ${
+        className={`w-full h-full rounded-sm ${
           isHidden ? "invisible" : "visible"
-        } absolute select-none pointer-events-none`}
-        src={require(`@assets/${id}.png`)}
+        }`}
+        src={card.src}
       />
     </div>
   );

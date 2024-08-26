@@ -8,8 +8,8 @@ export function callAll(...fns: Array<Function | undefined>) {
   };
 }
 
-export function getRandomCharCode(): number {
-  const MAX_AVAILABLE_CARDS: MCGameMaxAvailableCards = 16;
+export function getRandomCharCode(maxCards: MCGameMaxAvailableCards = 16): number {
+  const MAX_AVAILABLE_CARDS: MCGameMaxAvailableCards = maxCards;
   const INITIAL_CHAR_CODE = 97;
   return INITIAL_CHAR_CODE + Math.floor(Math.random() * MAX_AVAILABLE_CARDS);
 };
