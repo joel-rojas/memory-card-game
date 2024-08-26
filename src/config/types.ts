@@ -4,7 +4,7 @@ export interface MCSingleComponentProps {
 
 export type MCGameMaxCardsInDeck = 10;
 
-export type MCGameMaxAvailableCards = 16;
+export type MCGameMaxAvailableCards = 16 | number;
 
 export type MCGameLevelKeys = "easy" | "medium" | "hard";
 
@@ -19,6 +19,7 @@ export interface MCGameLevel {
 export type MCGameCard = {
   id: string;
   uid: string;
+  src: string;
   isHidden: boolean;
   isMatched: boolean;
 };
@@ -42,6 +43,7 @@ export interface MCAppState {
 }
 
 export interface MCGameState {
+  error: string | null;
   cardDeck: MCGameCardDeck;
   cardsShown: MCGameCardsShown;
 }
