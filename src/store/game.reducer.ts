@@ -8,9 +8,11 @@ import {
   MCGameMaxCardsInDeck,
   getInitialRandomList,
   shuffleDeck,
+  MCAppPreRenderedImgAsset,
 } from "@config";
 
 export const gameInitialState: MCGameState = {
+  error: null,
   cardDeck: [],
   cardsShown: {
     counter: 0,
@@ -18,10 +20,13 @@ export const gameInitialState: MCGameState = {
   },
 };
 
-function generateDeck<T extends MCGameCardDeck>(): T {
-  const MAX_CARDS: MCGameMaxCardsInDeck = 10;
+const MAX_CARDS: MCGameMaxCardsInDeck = 10;
+
+function generateDeck<T extends MCGameCardDeck>(
+  imgAssets: MCAppPreRenderedImgAsset[]
+): T {
   const randomList = getInitialRandomList<MCGameCard["id"]>(MAX_CARDS);
-  const list = [];
+  const list: MCGameCardDeck = [];
   let i = 0;
   let count = 0;
   while (i < MAX_CARDS) {
@@ -30,6 +35,7 @@ function generateDeck<T extends MCGameCardDeck>(): T {
     const newItem = {
       id,
       uid,
+      src: imgAssets.find((asset) => asset.imgId === id)!.src,
       isMatched: false,
       isHidden: true,
     };
@@ -106,9 +112,20 @@ export function gameReducer(
 ): MCGameState {
   switch (action.type) {
     case MCGameActionType.START_DECK: {
+      const sessionStorage = window.sessionStorage.getItem("appState");
+      if (sessionStorage) {
+        const { imageAssets } = JSON.parse(sessionStorage);
+        return {
+          ...gameInitialState,
+          cardDeck: shuffleDeck<MCGameCardDeck>(
+            generateDeck(imageAssets as MCAppPreRenderedImgAsset[])
+          ),
+        };
+      }
       return {
         ...gameInitialState,
-        cardDeck: shuffleDeck<MCGameCardDeck>(generateDeck()),
+        cardDeck: [],
+        error: 'No image assets found in session storage',
       };
     }
     case MCGameActionType.MATCHED_CARDS: {
@@ -122,6 +139,7 @@ export function gameReducer(
           selectedCards![secondCard]
         );
         return {
+          ...state,
           cardsShown: { counter: 0, selectedCards: null },
           cardDeck: bothCardsMatched
             ? changeCardMatchedStatus(state.cardDeck)
@@ -148,6 +166,7 @@ export function gameReducer(
         return state;
       }
       return {
+        ...state,
         cardsShown: {
           counter: (state.cardsShown.counter +
             1) as MCGameCardsShown["counter"],
@@ -166,9 +185,7 @@ export function gameReducer(
     case MCGameActionType.RESET_DECK: {
       return {
         ...gameInitialState,
-        cardDeck: shuffleDeck<MCGameCardDeck>(
-          resetDeck(state.cardDeck)
-        ),
+        cardDeck: shuffleDeck<MCGameCardDeck>(resetDeck(state.cardDeck)),
       };
     }
     case MCGameActionType.CLEAR_GAME: {

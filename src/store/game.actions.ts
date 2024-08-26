@@ -1,4 +1,4 @@
-import { MCGameCard, MCGameCardDeck } from "@config";
+import { MCAppPreRenderedImgAsset, MCGameCard, MCGameCardDeck } from "@config";
 
 export enum MCGameActionType {
   START_DECK = "Start Deck",
@@ -6,6 +6,7 @@ export enum MCGameActionType {
   SHOW_CARD = "Show Card",
   RESET_DECK = "Reset Deck",
   CLEAR_GAME = "Clear Game",
+  ERROR = "Error",
 }
 
 export type MCGameAction = {
@@ -13,4 +14,4 @@ export type MCGameAction = {
   payload?: MCGameActionPayload;
 };
 
-export type MCGameActionPayload = MCGameCard | MCGameCardDeck;
+export type MCGameActionPayload = MCGameCard | MCGameCardDeck | MCAppPreRenderedImgAsset[];
