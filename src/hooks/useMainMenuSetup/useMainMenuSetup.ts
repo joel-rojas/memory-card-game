@@ -28,7 +28,6 @@ const useMainMenuSetup = () => {
     React.useState<MCGameLevelKeys>("easy");
 
   const cardDeck = React.useMemo(
-    // () => shuffleDeck(getInitialRandomList(16 as MCGameMaxAvailableCards)),
     () =>
       shuffleDeck(
         appState.imageAssets.filter(
