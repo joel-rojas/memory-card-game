@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const useSessionStorage = (key: string, initialValue: unknown = null) => {
   const [value, setValue] = useState<unknown>(() => {
-    const storedValue = sessionStorage.getItem(key);
+    const storedValue = window.sessionStorage.getItem(key);
     if (storedValue) return JSON.parse(storedValue);
     if (
       initialValue !== null &&
