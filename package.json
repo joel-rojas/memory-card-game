@@ -20,7 +20,8 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "craco eject"
+    "eject": "craco eject",
+    "reinstall": "rm -rf node_modules && yarn install"
   },
   "eslintConfig": {
     "extends": [
