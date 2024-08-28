@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": false,
     "baseUrl": ".",
     "paths": {
       "*": ["src/*"],
@@ -7,6 +9,8 @@
       "@assets/*": ["src/assets/*"],
       "@components": ["src/components"],
       "@components/*": ["src/components/*"],
+      "@containers": ["src/containers"],
+      "@containers/*": ["src/containers/*"],
       "@hooks": ["src/hooks"],
       "@hooks/*": ["src/hooks/*"],
       "@pages": ["src/pages"],
