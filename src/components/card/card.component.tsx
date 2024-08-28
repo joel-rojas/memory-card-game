@@ -11,7 +11,7 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ card, onTap }) => {
-  const { id, isHidden } = card;
+  const { isHidden } = card;
   return (
     <div
       className={`w-16 sm:w-28 md:w-36 lg:w-48 h-16 sm:h-28 md:h-36 lg:h-48 ${
