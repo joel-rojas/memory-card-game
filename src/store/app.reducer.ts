@@ -84,7 +84,7 @@ export function appReducer(state: MCAppState, action: MCAppAction): MCAppState {
       };
     }
     case MCActionType.CLEAR_GAME: {
-      return { ...initialState, imageAssets: state.imageAssets };
+      return { ...initialState };
     }
     default:
       return state;

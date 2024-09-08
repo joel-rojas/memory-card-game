@@ -11,7 +11,7 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ card, onTap }) => {
-  const { id, isHidden } = card;
+  const { isHidden } = card;
   return (
     <div
       className={`w-16 sm:w-28 md:w-36 lg:w-48 h-16 sm:h-28 md:h-36 lg:h-48 ${
@@ -20,13 +20,13 @@ const Card: React.FC<CardProps> = ({ card, onTap }) => {
       onClick={(ev) => onTap(ev, card)}
     >
       <img
-        className={`p-1 ${
+        className={`p-1 absolute select-none pointer-events-none ${
           isHidden ? "visible" : "invisible"
-        } absolute select-none pointer-events-none`}
+        }`}
         src={require(`@assets/cover_card.png`)}
       />
       <img
-        className={`w-full h-full rounded-sm ${
+        className={`p-1 absolute select-none pointer-events-none ${
           isHidden ? "invisible" : "visible"
         }`}
         src={card.src}

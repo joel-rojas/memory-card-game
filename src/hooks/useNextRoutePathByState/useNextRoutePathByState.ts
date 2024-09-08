@@ -12,6 +12,11 @@ type RoutePathConfig = {
   validPath: boolean;
 };
 
+type PartialAppState = Pick<
+  MCAppState,
+  "gameLevel" | "gameProgress" | "gameStatus"
+>;
+
 const assets = require.context("@assets", true);
 const assetsList = assets.keys().map((asset) => assets(asset));
 
@@ -32,17 +37,21 @@ const useNextRoutePathByState = () => {
     React.useState<RoutePathConfig>(routePathConfigValue);
   const { state: appState, dispatch: appDispatch } = useAppContext();
   const { dispatch: gameDispatch } = useGameContext();
-  const { imageAssets } = appState;
+  const { gameLevel, gameProgress, gameStatus, imageAssets } = appState;
 
   const [appStateStorage, setAppStateStorage] = useSessionStorage(
     "appState"
-  ) as [MCAppState, React.Dispatch<SetStateAction<MCAppState>>];
+  ) as [PartialAppState, React.Dispatch<SetStateAction<PartialAppState>>];
 
   // Reset gameProgress to idle in session storage when the user leaves the game route (refresh)
   useBeforeUnload(
     React.useCallback(() => {
       if (location?.pathname === MCGameRoutePath.PLAY) {
-        setAppStateStorage((prev) => ({ ...prev, gameProgress: "idle" }));
+        setAppStateStorage((prev) => ({
+          ...prev,
+          gameProgress: "idle",
+          gameStatus: "new",
+        }));
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname])
@@ -50,34 +59,33 @@ const useNextRoutePathByState = () => {
 
   // Save whenever change in appState to sessionStorage
   React.useLayoutEffect(() => {
-    setAppStateStorage(appState);
+    setAppStateStorage({ gameLevel, gameProgress, gameStatus });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appState]);
+  }, [gameLevel, gameProgress, gameStatus]);
 
   // Restart game card deck if game is refreshed
   React.useLayoutEffect(() => {
     if (!appStateStorage) return;
 
-    const { gameStatus, gameProgress, imageAssets } = appStateStorage;
+    const { gameStatus, gameProgress } = appStateStorage;
     if (
       location?.pathname === MCGameRoutePath.PLAY &&
       gameProgress === "idle" &&
       gameStatus === "new" &&
       imageAssets.length > 0
     ) {
-      gameDispatch({ type: MCGameActionType.START_DECK });
+      gameDispatch({ type: MCGameActionType.START_DECK, payload: imageAssets });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname, appStateStorage]);
+  }, [location.pathname, appStateStorage, imageAssets]);
 
   // Check if the game is allowed to be played based on the route path and imageAssets
   React.useLayoutEffect(() => {
-    imageAssets &&
-      setRoutePathConfig((prev) => ({
-        ...prev,
-        isAllowed:
-          location?.pathname === MCGameRoutePath.PLAY && imageAssets.length > 0,
-      }));
+    setRoutePathConfig((prev) => ({
+      ...prev,
+      isAllowed:
+        location?.pathname === MCGameRoutePath.PLAY && imageAssets.length > 0,
+    }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, imageAssets]);
 

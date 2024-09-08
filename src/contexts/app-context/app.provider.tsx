@@ -6,12 +6,16 @@ import { appReducer, initialState } from "@store";
 import { MCAppState, MCSingleComponentProps } from "@config";
 
 const AppProvider: React.FC<MCSingleComponentProps> = ({ children }) => {
-  const [appStateStorage] = useSessionStorage("appState", initialState) as [
-    MCAppState
-  ];
+  const { gameLevel, gameProgress, gameStatus, imageAssets } = initialState;
+  const [appStateStorage] = useSessionStorage("appState", {
+    gameLevel,
+    gameProgress,
+    gameStatus,
+  }) as [Pick<MCAppState, "gameLevel" | "gameProgress" | "gameStatus">];
 
   const [state, dispatch] = useReducer(appReducer, {
     ...appStateStorage,
+    imageAssets,
   });
 
   const contextValue = React.useMemo(
@@ -20,9 +24,7 @@ const AppProvider: React.FC<MCSingleComponentProps> = ({ children }) => {
   );
 
   return (
-    <AppContext.Provider value={contextValue}>
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
   );
 };
 

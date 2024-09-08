@@ -26,15 +26,16 @@ const useMainMenuSetup = () => {
   };
   const [selectedGameLevel, setSelectedGameLevel] =
     React.useState<MCGameLevelKeys>("easy");
+  const { imageAssets } = appState;
 
   const cardDeck = React.useMemo(
     () =>
-      shuffleDeck(
-        appState.imageAssets.filter(
-          (asset) => !asset.imgId.includes("cover_card")
-        )
-      ),
-    [appState.imageAssets]
+      imageAssets?.length > 0
+        ? shuffleDeck(
+            imageAssets.filter((asset) => !asset.imgId.includes("cover_card"))
+          )
+        : [],
+    [imageAssets]
   );
 
   const handleStartGameClick = () => {};
@@ -65,6 +66,7 @@ const useMainMenuSetup = () => {
     });
     gameDispatch({
       type: MCGameActionType.START_DECK,
+      payload: imageAssets,
     });
     navigate(MCGameRoutePath.PLAY);
   };
