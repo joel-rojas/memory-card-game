@@ -112,9 +112,9 @@ export function gameReducer(
 ): MCGameState {
   switch (action.type) {
     case MCGameActionType.START_DECK: {
-      const sessionStorage = window.sessionStorage.getItem("appState");
-      if (sessionStorage) {
-        const { imageAssets } = JSON.parse(sessionStorage);
+      const { payload } = action;
+      const imageAssets = payload as MCAppPreRenderedImgAsset[];
+      if (imageAssets.length > 0) {
         return {
           ...gameInitialState,
           cardDeck: shuffleDeck<MCGameCardDeck>(
@@ -125,7 +125,7 @@ export function gameReducer(
       return {
         ...gameInitialState,
         cardDeck: [],
-        error: 'No image assets found in session storage',
+        error: 'No loaded image assets',
       };
     }
     case MCGameActionType.MATCHED_CARDS: {
