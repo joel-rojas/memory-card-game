@@ -21,7 +21,7 @@ const useGameSetup = () => {
     type: "end",
     isShown: false,
   });
-  const { gameStatus, gameLevel, gameProgress } = appState;
+  const { gameStatus, gameLevel, gameProgress, imageAssets } = appState;
   const { cardDeck } = gameState;
   const [countdown, setCountdown] = React.useState<number>(gameLevel.countdown);
   const MAX_CARDS_SHOWN_PER_TURN = 2;
@@ -48,7 +48,7 @@ const useGameSetup = () => {
   const handleResetGameClick = () => {
     appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "new" });
     gameProgress === "win"
-      ? gameDispatch({ type: MCGameActionType.START_DECK })
+      ? gameDispatch({ type: MCGameActionType.START_DECK, payload: imageAssets })
       : gameDispatch({ type: MCGameActionType.RESET_DECK });
     appDispatch({
       type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
