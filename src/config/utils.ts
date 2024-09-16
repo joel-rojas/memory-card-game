@@ -8,20 +8,24 @@ export function callAll(...fns: Array<Function | undefined>) {
   };
 }
 
-export function getRandomCharCode(maxCards: MCGameMaxAvailableCards = 16): number {
+export function getRandomCharCode(
+  maxCards: MCGameMaxAvailableCards = 16
+): number {
   const MAX_AVAILABLE_CARDS: MCGameMaxAvailableCards = maxCards;
   const INITIAL_CHAR_CODE = 97;
   return INITIAL_CHAR_CODE + Math.floor(Math.random() * MAX_AVAILABLE_CARDS);
-};
+}
 
-export function getInitialRandomList<T extends string>(count: number): string[] {
+export function getInitialRandomList<T extends string>(
+  count: number
+): string[] {
   let nums = new Set<T>();
   while (nums.size < count) {
     const randomCard = `${String.fromCharCode(getRandomCharCode())}_card` as T;
     !nums.has(randomCard) && nums.add(randomCard);
   }
   return Array.from(nums);
-};
+}
 
 export function shuffleDeck<T extends unknown[]>(cardDeck: T): T {
   const initialIndex = cardDeck.length - 1;
@@ -30,4 +34,10 @@ export function shuffleDeck<T extends unknown[]>(cardDeck: T): T {
     [cardDeck[i], cardDeck[j]] = [cardDeck[j], cardDeck[i]];
   }
   return cardDeck as T;
+}
+
+export function loadImages() {
+  const assets = require.context("@assets", true);
+  const assetsList = assets.keys().map((asset) => assets(asset));
+  return assetsList;
 }
