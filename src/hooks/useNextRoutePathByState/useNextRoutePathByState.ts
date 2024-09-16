@@ -1,9 +1,9 @@
 import React, { SetStateAction } from "react";
-import { useLocation, useNavigate, useBeforeUnload } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useSessionStorage } from "@hooks";
 import { useAppContext, useGameContext } from "@contexts";
-import { MCAppState, MCGameRoutePath } from "@config";
+import { loadImages, MCAppState, MCGameRoutePath } from "@config";
 import { MCActionType, MCGameActionType } from "@store";
 
 type RoutePathConfig = {
@@ -17,12 +17,10 @@ type PartialAppState = Pick<
   "gameLevel" | "gameProgress" | "gameStatus"
 >;
 
-const assets = require.context("@assets", true);
-const assetsList = assets.keys().map((asset) => assets(asset));
-
 const useNextRoutePathByState = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const routePathConfigValue = React.useMemo<RoutePathConfig>(
     () => ({
       isAllowed: false,
@@ -35,6 +33,7 @@ const useNextRoutePathByState = () => {
   );
   const [routePathConfig, setRoutePathConfig] =
     React.useState<RoutePathConfig>(routePathConfigValue);
+  const [assetsList, setAssetsList] = React.useState<string[]>([]);
   const { state: appState, dispatch: appDispatch } = useAppContext();
   const { dispatch: gameDispatch } = useGameContext();
   const { gameLevel, gameProgress, gameStatus, imageAssets } = appState;
@@ -43,25 +42,34 @@ const useNextRoutePathByState = () => {
     "appState"
   ) as [PartialAppState, React.Dispatch<SetStateAction<PartialAppState>>];
 
-  // Reset gameProgress to idle in session storage when the user leaves the game route (refresh)
-  useBeforeUnload(
-    React.useCallback(() => {
-      if (location?.pathname === MCGameRoutePath.PLAY) {
-        setAppStateStorage((prev) => ({
-          ...prev,
-          gameProgress: "idle",
-          gameStatus: "new",
-        }));
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.pathname])
-  );
+  // Load the image assets to the appState initially
+  React.useLayoutEffect(() => {
+    const assetsList: string[] = loadImages();
+    setAssetsList(assetsList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Save whenever change in appState to sessionStorage
   React.useLayoutEffect(() => {
     setAppStateStorage({ gameLevel, gameProgress, gameStatus });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameLevel, gameProgress, gameStatus]);
+
+  // Load the image assets to the appState
+  React.useLayoutEffect(() => {
+    if (imageAssets.length === 0 && assetsList.length > 0) {
+      const payload = assetsList.map((asset: string) => {
+        const assetId = asset!.split("/").pop();
+        const imgId = assetId!.split(".")[0];
+        return {
+          src: asset,
+          imgId,
+        };
+      });
+      appDispatch({ type: MCActionType.LOAD_ASSETS, payload });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assetsList, imageAssets]);
 
   // Restart game card deck if game is refreshed
   React.useLayoutEffect(() => {
@@ -118,21 +126,24 @@ const useNextRoutePathByState = () => {
     }));
   }, [location.pathname]);
 
-  // Load the image assets to the appState
-  React.useLayoutEffect(() => {
-    if (imageAssets.length === 0 && assetsList.length > 0) {
-      const payload = assetsList.map((asset: string) => {
-        const assetId = asset!.split("/").pop();
-        const imgId = assetId!.split(".")[0];
-        return {
-          src: asset,
-          imgId,
-        };
-      });
-      appDispatch({ type: MCActionType.LOAD_ASSETS, payload });
-    }
+  // Reset gameProgress and gameStatus in session storage when the user leaves the game route (app reload)
+  React.useEffect(() => {
+    const handlePageHide = () => {
+      window.sessionStorage.setItem(
+        "appState",
+        JSON.stringify({
+          ...appStateStorage,
+          gameProgress: "idle",
+          gameStatus: "new",
+        })
+      );
+    };
+    window.addEventListener("pagehide", handlePageHide);
+    return () => {
+      window.removeEventListener("pagehide", handlePageHide);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [assetsList, imageAssets]);
+  }, [appStateStorage]);
 
   // Redirect to the next route path
   React.useEffect(() => {
