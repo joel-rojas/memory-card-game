@@ -25,6 +25,13 @@ const config = {
       "@containers/*": path.resolve(__dirname, "src/containers/*"),
     },
   },
+  jest: {
+    configure: {
+      globals: {
+        CONFIG: true,
+      },
+    },
+  },
 };
 
 export default config;
