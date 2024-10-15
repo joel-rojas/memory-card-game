@@ -11,7 +11,7 @@ const AppProvider: React.FC<MCSingleComponentProps> = ({ children }) => {
     gameLevel,
     gameProgress,
     gameStatus,
-  }) as [Pick<MCAppState, "gameLevel" | "gameProgress" | "gameStatus">];
+  }) as unknown as [Pick<MCAppState, "gameLevel" | "gameProgress" | "gameStatus">];
 
   const [state, dispatch] = useReducer(appReducer, {
     ...appStateStorage,
