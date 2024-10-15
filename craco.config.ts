@@ -1,32 +1,40 @@
 import path from "path";
 
+import { pathsToModuleNameMapper } from "ts-jest";
+import aliases from "./tsconfig.paths.json";
+
+const getWebpackAliasesFromPaths = (configPaths: Record<string, string[]>) => {
+  const alias = Object.entries(configPaths).reduce(
+    (webpackAliases, [configAlias, configPathList]) => {
+      const [aliasKey] = configAlias.split("/");
+      const [relativePathToDir] = configPathList[0].split("/*");
+
+      return {
+        ...webpackAliases,
+        ...(configAlias.includes("/*") && configPathList[0].includes("/*")
+          ? { [configAlias]: path.resolve(__dirname, configPathList[0]) }
+          : { [aliasKey]: path.resolve(__dirname, relativePathToDir) }),
+      };
+    },
+    {} as Record<string, string>
+  );
+  return alias;
+};
+
 const config = {
   typescript: {
     enableTypeChecking: true,
   },
   webpack: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-      "@assets": path.resolve(__dirname, "src/assets"),
-      "@assets/*": path.resolve(__dirname, "src/assets/*"),
-      "@components": path.resolve(__dirname, "src/components"),
-      "@components/*": path.resolve(__dirname, "src/components/*"),
-      "@hooks": path.resolve(__dirname, "src/hooks"),
-      "@hooks/*": path.resolve(__dirname, "src/hooks/*"),
-      "@pages": path.resolve(__dirname, "src/pages"),
-      "@pages/*": path.resolve(__dirname, "src/pages/*"),
-      "@contexts": path.resolve(__dirname, "src/contexts"),
-      "@contexts/*": path.resolve(__dirname, "src/contexts/*"),
-      "@store": path.resolve(__dirname, "src/store"),
-      "@store/*": path.resolve(__dirname, "src/store/*"),
-      "@config": path.resolve(__dirname, "src/config"),
-      "@config/*": path.resolve(__dirname, "src/config/*"),
-      "@containers": path.resolve(__dirname, "src/containers"),
-      "@containers/*": path.resolve(__dirname, "src/containers/*"),
-    },
+    alias: getWebpackAliasesFromPaths(aliases.compilerOptions.paths),
   },
   jest: {
     configure: {
+      moduleNameMapper: {
+        ...pathsToModuleNameMapper(aliases.compilerOptions.paths, {
+          prefix: "<rootDir>",
+        }),
+      },
       globals: {
         CONFIG: true,
       },
