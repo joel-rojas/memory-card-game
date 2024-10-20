@@ -1,6 +1,7 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
+
 import Board from "./board.component";
+import { MCGameCard } from "@config";
 
 describe("Board Component", () => {
   it("renders without crashing", async () => {
@@ -24,13 +25,38 @@ describe("Board Component", () => {
     rerender(<Board>{undefined}</Board>);
     expect(container).toContainHTML('');
     // Test rerender with multiple children
+    const mockUICards: MCGameCard[] = [
+      {
+        id: `1`,
+        src: "card1.png",
+        uid: "1ui",
+        isMatched: false,
+        isHidden: true,
+      },
+      {
+        id: `2`,
+        src: "card2.png",
+        uid: "2ui",
+        isMatched: false,
+        isHidden: true,
+      },
+      {
+        id: `3`,
+        src: "card3.png",
+        uid: "3ui",
+        isMatched: false,
+        isHidden: true,
+      },
+    ];
     rerender(
       <Board>
-        <div>Test 1</div>
-        <div>Test 2</div>
+        {mockUICards.map((card) => (
+          <div key={card.id}>{card.src}</div>
+        ))}
       </Board>
     );
-    expect(container).toContainHTML('Test 1');
-    expect(container).toContainHTML('Test 2');
+    expect(screen.getByText("card1.png")).toBeInTheDocument();
+    expect(screen.getByText("card2.png")).toBeInTheDocument();
+    expect(screen.getByText("card3.png")).toBeInTheDocument();
   });
 });
