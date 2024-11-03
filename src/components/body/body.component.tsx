@@ -25,7 +25,7 @@ const Body: React.FC<BodyProps> = ({
   asContainer = false,
 }: BodyProps): JSX.Element => {
   return (
-    <section
+    <main
       data-testid="body"
       className={`flex flex-1 justify-center ${
         fullyCentered ? "items-center" : ""
@@ -33,7 +33,7 @@ const Body: React.FC<BodyProps> = ({
        ${asContainer ? "container mx-auto" : ""}`}
     >
       {children}
-    </section>
+    </main>
   );
 };
 
