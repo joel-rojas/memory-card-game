@@ -1,6 +1,6 @@
 import React from "react";
 
-import { MCGameTextProps, MCGameTextSizes, MCGameUITypes } from "config";
+import { MCGameTextProps, MCGameTextSizes, MCGameUITypes } from "@config";
 
 const Text: React.FC<MCGameTextProps> = ({ label, size, type }) => {
   const setupClassListPerSize = (
