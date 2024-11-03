@@ -102,7 +102,8 @@ export interface MCGameRadioGroupProps
   extends MCGameGenericUIInputCmpProps<"radio-group"> {
   options:
     | MCGameRadioButtonProps[]
-    | React.ReactElement<MCGameRadioButtonProps>[];
+    | React.ReactElement<MCGameRadioButtonProps>[]
+    | null;
 }
 
 export interface MCGameRadioButtonProps

@@ -21,7 +21,7 @@ const RadioGroup: React.FC<MCGameRadioGroupProps> = ({ options }) => {
       React.isValidElement<React.ReactElement<MCGameRadioButtonProps>[]>(
         children
       );
-    if (!children || (!isValidEl && !isValidRadioButtonArray)) {
+    if (!isValidEl && !isValidRadioButtonArray) {
       return null;
     }
     if (isValidEl) {
