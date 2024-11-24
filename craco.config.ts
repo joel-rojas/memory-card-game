@@ -30,9 +30,10 @@ const config = {
   },
   jest: {
     configure: {
+      preset: "ts-jest",
       moduleNameMapper: {
         ...pathsToModuleNameMapper(aliases.compilerOptions.paths, {
-          prefix: "<rootDir>",
+          prefix: "<rootDir>/",
         }),
       },
       globals: {
