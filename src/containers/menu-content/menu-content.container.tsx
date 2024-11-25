@@ -47,6 +47,7 @@ const MenuContent: React.FC<MenuContentProps> = ({
 
   return (
     <div
+      role="presentation"
       className={`flex flex-col items-center justify-center ${
         fullWidth ? "w-full" : "w-auto"
       }`}
