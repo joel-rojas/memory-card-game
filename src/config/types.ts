@@ -102,7 +102,8 @@ export interface MCGameRadioGroupProps
   extends MCGameGenericUIInputCmpProps<"radio-group"> {
   options:
     | MCGameRadioButtonProps[]
-    | React.ReactElement<MCGameRadioButtonProps>[];
+    | React.ReactElement<MCGameRadioButtonProps>[]
+    | null;
 }
 
 export interface MCGameRadioButtonProps
@@ -148,3 +149,16 @@ export type MCGameProgressiveMenuKeys =
 export type MCGameStartGameMenuKeys = "startGame" | "about";
 
 export type MCGamePlayMenuKeys = "backToStart" | "gameLevel" | "play";
+
+export type MCAppAnimatedCardLayoutItemStatus = "entering" | "exiting";
+
+export type MCAppAnimatedCardLayoutItem = {
+  index: number;
+  item: MCAppPreRenderedImgAsset;
+  position: { x: number; y: number };
+  status: MCAppAnimatedCardLayoutItemStatus;
+};
+
+export type MCAppAnimatedCardLayout = {
+  items: MCAppAnimatedCardLayoutItem[];
+};
