@@ -15,8 +15,6 @@
       "@/hooks/*": ["src/hooks/*"],
       "@/pages": ["src/pages"],
       "@/pages/*": ["src/pages/*"],
-      "@/contexts": ["src/contexts"],
-      "@/contexts/*": ["src/contexts/*"],
       "@/store": ["src/store"],
       "@/store/*": ["src/store/*"],
       "@/config": ["src/config"],
