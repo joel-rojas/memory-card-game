@@ -11,7 +11,7 @@ export function callAll(
 }
 
 export function getRandomCharCode(
-  maxCards: MCGameMaxAvailableCards = 16
+  maxCards: MCGameMaxAvailableCards = 20
 ): number {
   const MAX_AVAILABLE_CARDS: MCGameMaxAvailableCards = maxCards;
   const INITIAL_CHAR_CODE = 97;
