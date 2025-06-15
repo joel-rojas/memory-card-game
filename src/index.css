@@ -15,15 +15,3 @@
     font-family: "Press Start 2P", system-ui, sans-serif;
   }
 }
-
-@layer components {
-  .cover-card {
-    background-color: #E02D25;
-  }
-  .card.entering {
-    opacity: 1;
-  }
-  .card.exiting {
-    opacity: 0;
-  }
-}

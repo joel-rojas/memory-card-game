@@ -62,11 +62,11 @@ describe("AnimationFrame component", () => {
     render(<AnimationFrame cardDeck={mockCardDeck} />);
     const cardImages = screen.getAllByRole("presentation");
     expect(cardImages[0]).toHaveClass(
-      "card w-56 h-56 sm:w-28 sm:h-28 p-1 select-none pointer-events-none z-10 absolute entering transition duration-200 ease-in"
+      "card w-56 h-56 sm:w-28 sm:h-28 p-1 select-none pointer-events-none z-10 absolute opacity-entering transition duration-200 ease-in"
     );
     expect(cardImages[0]).toHaveStyle("transform: translate3d(0px, 0px, 0px)");
     expect(cardImages[1]).toHaveClass(
-      "card w-56 h-56 sm:w-28 sm:h-28 p-1 select-none pointer-events-none z-10 absolute exiting transition-none"
+      "card w-56 h-56 sm:w-28 sm:h-28 p-1 select-none pointer-events-none z-10 absolute opacity-exiting transition-none"
     );
     expect(cardImages[1]).toHaveStyle(
       "transform: translate3d(100px, 100px, 0px)"

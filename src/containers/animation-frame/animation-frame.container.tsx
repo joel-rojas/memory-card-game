@@ -17,8 +17,10 @@ const AnimationFrame: React.FC<AnimationFrameProps> = ({ cardDeck }) => {
           <img
             key={`${card.item.imgId}_${card.index}`}
             className={`card w-56 h-56 sm:w-28 sm:h-28 p-1 select-none pointer-events-none z-10 absolute ${
-              card.status
-            } ${card.status === "entering" ? "transition duration-200 ease-in" : "transition-none"}`}
+              card.status === "entering"
+                ? "opacity-entering transition duration-200 ease-in"
+                : "opacity-exiting transition-none"
+            }`}
             style={{
               transform: `translate3d(${card.position.x}px, ${card.position.y}px, 0px)`,
             }}
