@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
 
 import Board from "./board.component";
 import type { MCGameCard } from "@/config";
@@ -13,17 +14,17 @@ describe("Board Component", () => {
     const boardElement = await screen.findByTestId("board");
     expect(boardElement).toBeInTheDocument();
     // Test rerender with string as children
-    rerender(<Board>{'Test'}</Board>);
-    expect(container).toContainHTML('Test');
+    rerender(<Board>{"Test"}</Board>);
+    expect(container).toContainHTML("Test");
     // Test rerender with number as children
     rerender(<Board>{1}</Board>);
-    expect(container).toContainHTML('1');
+    expect(container).toContainHTML("1");
     // Test rerender with boolean as children
     rerender(<Board>{true.toString()}</Board>);
-    expect(container).toContainHTML('true');
+    expect(container).toContainHTML("true");
     // Test rerender without children
     rerender(<Board>{undefined}</Board>);
-    expect(container).toContainHTML('');
+    expect(container).toContainHTML("");
     // Test rerender with multiple children
     const mockUICards: MCGameCard[] = [
       {

@@ -1,4 +1,5 @@
 import { screen, render } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
 
 import Body from "./body.component";
 import type { MCGameCard } from "@/config";

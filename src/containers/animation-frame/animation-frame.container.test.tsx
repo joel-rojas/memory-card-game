@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 import type { MCAppPreRenderedImgAsset } from "@/config";
 import { useAnimatedCardsFrame } from "@/hooks";
@@ -18,7 +19,7 @@ import AnimationFrame from ".";
 
 describe("AnimationFrame component", () => {
   beforeEach(() => {
-     vi.mocked(useAnimatedCardsFrame).mockReturnValue({
+    vi.mocked(useAnimatedCardsFrame).mockReturnValue({
       layout: {
         items: [
           {

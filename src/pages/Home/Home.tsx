@@ -35,7 +35,8 @@ const Home = () => {
       const addNextStepEvent = (uiField: MCGameProgressiveMenuKeys) => {
         (contentMap?.[uiField] as MCGameButtonProps).onClick = callAll(
           (contentMap?.[uiField] as MCGameButtonProps)?.onClick,
-          () => nextMenu(upcomingMenu)
+          (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+            nextMenu(upcomingMenu)
         );
       };
       addNextStepEvent(

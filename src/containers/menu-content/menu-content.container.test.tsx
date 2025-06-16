@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
 
 import MenuContent from "./menu-content.container";
 import type {
@@ -32,13 +33,13 @@ describe("MenuContent Component", () => {
           label: "Test Radio Button 1",
         } as MCGameRadioButtonProps,
         {
-            checked: false,
-            onChange: vi.fn(),
-            name: "Option 2",
-            type: "radio",
-            value: "medium",
-            label: "Test Radio Button 2",
-          } as MCGameRadioButtonProps,
+          checked: false,
+          onChange: vi.fn(),
+          name: "Option 2",
+          type: "radio",
+          value: "medium",
+          label: "Test Radio Button 2",
+        } as MCGameRadioButtonProps,
       ],
     } as MCGameRadioGroupProps,
   ];

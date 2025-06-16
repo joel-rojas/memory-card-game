@@ -1,4 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 import useWindowResize from "./useWindowResize";
 import type { MCAppScreenSizes } from "@/config";
@@ -28,7 +29,6 @@ describe("useWindowResize", () => {
   afterEach(() => {
     window.innerWidth = originalInnerWidth;
     window.innerHeight = originalInnerHeight;
-    
   });
 
   it("should return initial screen dimensions and type", () => {
@@ -75,4 +75,3 @@ describe("useWindowResize", () => {
     expect(result.current.type).toBe("desktop");
   });
 });
-

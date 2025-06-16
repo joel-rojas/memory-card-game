@@ -1,9 +1,9 @@
 import type { MCGameMaxAvailableCards } from "./types";
 
-export function callAll(
-  ...fns: Array<((...args: unknown[]) => void) | undefined>
+export function callAll<T extends unknown>(
+  ...fns: Array<((...args: T[]) => void) | undefined>
 ) {
-  return (...args: unknown[]) => {
+  return (...args: T[]) => {
     fns.forEach((fn) => {
       if (fn) fn(...args);
     });

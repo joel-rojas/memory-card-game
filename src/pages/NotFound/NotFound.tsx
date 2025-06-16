@@ -1,4 +1,3 @@
-import React from "react";
 import { useRouteError } from "react-router";
 
 import { Body, Text, Page } from "@/components";

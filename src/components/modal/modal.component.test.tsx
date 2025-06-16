@@ -1,4 +1,4 @@
-import React from "react";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Modal from "./modal.component";
 

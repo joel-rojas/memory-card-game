@@ -23,7 +23,7 @@ export default defineConfig({
     setupFiles: ["./src/setupTests.ts"],
     css: true,
     include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    exclude: ["node_modules", "dist", "build", "old_app"],
+    exclude: ["node_modules", "dist", "build"],
     coverage: {
       provider: "v8",
       reportsDirectory: "./coverage",
@@ -33,7 +33,6 @@ export default defineConfig({
         "src/setupTests.ts",
         "**/*.d.ts",
         "**/*.config.*",
-        "old_app/",
       ],
     },
     typecheck: {

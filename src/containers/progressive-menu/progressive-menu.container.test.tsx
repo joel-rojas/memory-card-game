@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { describe, it, expect, afterEach, vi } from "vitest";
 
 import ProgressiveMenu from "./progressive-menu.container";
 import type { MCGameMainMenuContentKeys } from "@/config";
@@ -24,7 +25,7 @@ describe("ProgressiveMenu Component", () => {
   });
 
   it("should call onUpcomingMenu when nextMenu is called", () => {
-    mockRenderMenu.mockImplementation((currentMenu, nextMenu) => {
+    mockRenderMenu.mockImplementation((_, nextMenu) => {
       nextMenu("settingsMenu" as MCGameMainMenuContentKeys);
       return <div>Menu Content</div>;
     });

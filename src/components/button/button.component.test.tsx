@@ -1,15 +1,25 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  vi,
+  type Mock,
+} from "vitest";
+
 import Button from "./button.component";
 
 describe("Button component", () => {
-  let mockOnClick: () => vi.Mock;
+  let mockOnClick: () => Mock;
   beforeEach(() => {
     mockOnClick = vi.fn();
   });
   afterEach(() => {
     vi.clearAllMocks();
   });
-  
+
   it("renders the button with the correct text", () => {
     render(
       <Button type="button" onClick={mockOnClick} label="Start Game"></Button>

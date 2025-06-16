@@ -32,7 +32,7 @@ const useGameSetup = () => {
 
   const handleCardOnClick = React.useCallback(
     (
-      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      _: React.MouseEvent<HTMLDivElement, MouseEvent>,
       card: MCGameCard
     ): void => {
       if (

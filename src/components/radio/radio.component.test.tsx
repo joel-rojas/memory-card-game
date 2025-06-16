@@ -1,5 +1,6 @@
-import React from "react";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+
 import RadioButton from "./radio.component";
 import type { MCGameRadioButtonProps } from "@/config";
 
@@ -21,7 +22,9 @@ describe("RadioButton component", () => {
 
   it("renders the radio button as checked when the checked prop is true", () => {
     render(<RadioButton {...mockProps} checked={true} />);
-    const radioElement = screen.getByLabelText(/test label/i) as HTMLInputElement;
+    const radioElement = screen.getByLabelText(
+      /test label/i
+    ) as HTMLInputElement;
     expect(radioElement.checked).toBe(true);
   });
 
