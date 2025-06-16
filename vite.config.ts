@@ -40,4 +40,5 @@ export default defineConfig({
       tsconfig: "./tsconfig.test.json",
     },
   },
+  publicDir: "public",
 });
