@@ -40,4 +40,16 @@ export default defineConfig({
     },
   },
   publicDir: "public",
+  build: {
+    outDir: "build",
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+          router: ["react-router"],
+        },
+      },
+    },
+  },
 });
