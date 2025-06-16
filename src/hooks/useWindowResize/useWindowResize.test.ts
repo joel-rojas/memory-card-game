@@ -1,7 +1,7 @@
 import { renderHook, act } from "@testing-library/react";
 
 import useWindowResize from "./useWindowResize";
-import { MCAppScreenSizes } from "@config";
+import type { MCAppScreenSizes } from "@/config";
 
 const getScreenType = (width: number): MCAppScreenSizes => {
   if (width < 640) {
@@ -13,7 +13,7 @@ const getScreenType = (width: number): MCAppScreenSizes => {
   }
 };
 
-const mockCalculateScreenType = jest.fn(getScreenType);
+const mockCalculateScreenType = vi.fn(getScreenType);
 
 describe("useWindowResize", () => {
   const originalInnerWidth = window.innerWidth;
@@ -22,7 +22,7 @@ describe("useWindowResize", () => {
   beforeEach(() => {
     window.innerWidth = originalInnerWidth;
     window.innerHeight = originalInnerHeight;
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -75,3 +75,4 @@ describe("useWindowResize", () => {
     expect(result.current.type).toBe("desktop");
   });
 });
+

@@ -1,12 +1,12 @@
 import React from "react";
 
-import { MCGameMainMenuContentKeys } from "@config";
+import type { MCGameMainMenuContentKeys } from "@/config";
 
 interface ProgressiveMenuProps {
   renderMenu: (
     currentMenu: MCGameMainMenuContentKeys,
     nextMenu: (menuKey: MCGameMainMenuContentKeys) => void
-  ) => JSX.Element;
+  ) => React.ReactElement | null;
   currentMenu: MCGameMainMenuContentKeys;
   onUpcomingMenu: (menuKey: MCGameMainMenuContentKeys) => void;
 }

@@ -10,7 +10,7 @@ interface BoardProps {
  * @component
  * @param {Object} props - Component props.
  * @param {React.ReactNode | React.ReactNode[]} props.children - The child elements to be displayed within the board.
- * @returns {JSX.Element} The rendered board component.
+ * @returns {React.ReactElement} The rendered board component.
  */
 const Board: React.FC<BoardProps> = ({ children }: BoardProps) => {
   return (

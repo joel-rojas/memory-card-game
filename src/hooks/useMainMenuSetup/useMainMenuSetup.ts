@@ -1,18 +1,18 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { startTransition } from "react";
+import { useNavigate } from "react-router";
 
 import {
-  MCGameMainMenuContentKeys,
-  MCGameUISetPropsMap,
-  MCGameLevelKeys,
+  type MCGameMainMenuContentKeys,
+  type MCGameUISetPropsMap,
+  type MCGameLevelKeys,
   MCGameRoutePath,
-  MCGameCurrentUIProps,
-  MCGameProgressiveMenuKeys,
-  MCGameUIPropsList,
+  type MCGameCurrentUIProps,
+  type MCGameProgressiveMenuKeys,
+  type MCGameUIPropsList,
   shuffleDeck,
-} from "@config";
-import { useAppContext, useGameContext } from "@contexts";
-import { MCActionType, MCGameActionType } from "@store";
+} from "@/config";
+import { useAppContext, useGameContext } from "@/store";
+import { MCActionType, MCGameActionType } from "@/store";
 
 const useMainMenuSetup = () => {
   const navigate = useNavigate();
@@ -60,15 +60,19 @@ const useMainMenuSetup = () => {
   };
 
   const handlePlayGameClick = () => {
-    dispatch({
-      type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
-      payload: "inProgress",
+    startTransition(() => {
+      dispatch({
+        type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
+        payload: "inProgress",
+      });
+      gameDispatch({
+        type: MCGameActionType.START_DECK,
+        payload: imageAssets,
+      });
+      startTransition(() => {
+        navigate(MCGameRoutePath.PLAY);
+      });
     });
-    gameDispatch({
-      type: MCGameActionType.START_DECK,
-      payload: imageAssets,
-    });
-    navigate(MCGameRoutePath.PLAY);
   };
 
   const getMainMenuContentSet = React.useCallback(

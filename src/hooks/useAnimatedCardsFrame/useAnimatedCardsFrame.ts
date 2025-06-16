@@ -1,11 +1,11 @@
 import React from "react";
 
-import { useWindowResize } from "@hooks";
-import {
+import { useWindowResize } from "@/hooks";
+import type {
   MCAppPreRenderedImgAsset,
   MCAppAnimatedCardLayout,
   MCAppAnimatedCardLayoutItem,
-} from "@config";
+} from "@/config";
 
 const useAnimatedCardsFrame = (cardDeck: MCAppPreRenderedImgAsset[]) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -112,7 +112,7 @@ const useAnimatedCardsFrame = (cardDeck: MCAppPreRenderedImgAsset[]) => {
   React.useEffect(() => {
     if (!layout || counter === -1) return;
 
-    let timerId: NodeJS.Timer = setInterval(() => {
+    const timerId = setInterval(() => {
       let currentIdx = counter;
       let nextIndex = counter + MAX_ITEMS - 1;
 

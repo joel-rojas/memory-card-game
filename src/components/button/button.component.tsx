@@ -1,6 +1,6 @@
 import React from "react";
 
-import { MCGameButtonProps } from "@config";
+import type { MCGameButtonProps } from "@/config";
 
 /**
  * Button component for the memory card game.
@@ -12,7 +12,7 @@ import { MCGameButtonProps } from "@config";
  * @param {(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void} props.onClick - The function to call when the button is clicked.
  * @param {string} props.label - The text label to display inside the button.
  * @param {string} [props.type="button"] - The type attribute for the button element.
- * @returns {JSX.Element} The rendered button component.
+ * @returns {React.ReactElement} The rendered button component.
  */
 const Button: React.FC<MCGameButtonProps> = ({
   btnCls = "",

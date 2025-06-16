@@ -1,6 +1,6 @@
 import React from "react";
 
-import { MCGameRadioButtonProps } from "@config";
+import type { MCGameRadioButtonProps } from "@/config";
 
 const RadioButton: React.FC<MCGameRadioButtonProps> = ({
   name,

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "types": ["vitest/globals", "vite/client", "@testing-library/jest-dom"]
+  },
+  "include": [
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.tsx",
+    "src/setupTests.ts"
+  ],
+  "exclude": ["node_modules", "old_app", "dist", "build"]
+}

@@ -128,11 +128,11 @@ export interface MCGameTextProps
 
 export type MCGameTextSizes = "small" | "medium" | "large" | "x-large";
 
-export enum MCGameRoutePath {
-  ANYTHING = "*",
-  HOME = "/",
-  PLAY = "/play",
-}
+export const MCGameRoutePath = {
+  ANYTHING: "*",
+  HOME: "/home",
+  PLAY: "/play",
+} as const;
 
 export type MCGameMenuKeys =
   | MCGameCurrentModalActionKeys

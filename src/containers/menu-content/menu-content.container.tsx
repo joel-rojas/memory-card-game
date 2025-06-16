@@ -1,7 +1,7 @@
 import React from "react";
 
-import { MCGameUIPropsList, MCGameCurrentUIProps } from "@config";
-import { Button, Text, RadioGroup } from "@components";
+import type { MCGameUIPropsList, MCGameCurrentUIProps } from "@/config";
+import { Button, Text, RadioGroup } from "@/components";
 
 interface MenuContentProps {
   contentList: MCGameUIPropsList;
