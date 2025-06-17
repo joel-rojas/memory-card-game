@@ -1,5 +1,3 @@
-import React from "react";
-
 import {
   Card,
   Body,
@@ -9,9 +7,9 @@ import {
   Button,
   Modal,
   Page,
-} from "@components";
-import { useGameSetup } from "@hooks";
-import { MenuContent } from "@containers";
+} from "@/components";
+import { useGameSetup } from "@/hooks";
+import { MenuContent } from "@/containers";
 
 export default function Play() {
   const {

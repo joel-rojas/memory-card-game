@@ -1,4 +1,6 @@
-export * from './app.reducer';
-export * from './app.actions';
-export * from './game.reducer';
-export * from './game.actions';
+export * from "./app-store";
+export * from "./game-store";
+export * from "./root.reducer";
+export * from "./root.context";
+export * from "./hooks";
+export { default as RootProvider } from "./root.provider";

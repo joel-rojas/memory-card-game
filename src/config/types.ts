@@ -1,10 +1,6 @@
-export interface MCSingleComponentProps {
-  children: React.ReactNode;
-}
-
 export type MCGameMaxCardsInDeck = 10;
 
-export type MCGameMaxAvailableCards = 16 | number;
+export type MCGameMaxAvailableCards = 20 | number;
 
 export type MCGameLevelKeys = "easy" | "medium" | "hard";
 
@@ -102,7 +98,8 @@ export interface MCGameRadioGroupProps
   extends MCGameGenericUIInputCmpProps<"radio-group"> {
   options:
     | MCGameRadioButtonProps[]
-    | React.ReactElement<MCGameRadioButtonProps>[];
+    | React.ReactElement<MCGameRadioButtonProps>[]
+    | null;
 }
 
 export interface MCGameRadioButtonProps
@@ -127,11 +124,11 @@ export interface MCGameTextProps
 
 export type MCGameTextSizes = "small" | "medium" | "large" | "x-large";
 
-export enum MCGameRoutePath {
-  ANYTHING = "*",
-  HOME = "/",
-  PLAY = "/play",
-}
+export const MCGameRoutePath = {
+  ANYTHING: "*",
+  HOME: "/home",
+  PLAY: "/play",
+} as const;
 
 export type MCGameMenuKeys =
   | MCGameCurrentModalActionKeys
@@ -148,3 +145,16 @@ export type MCGameProgressiveMenuKeys =
 export type MCGameStartGameMenuKeys = "startGame" | "about";
 
 export type MCGamePlayMenuKeys = "backToStart" | "gameLevel" | "play";
+
+export type MCAppAnimatedCardLayoutItemStatus = "entering" | "exiting";
+
+export type MCAppAnimatedCardLayoutItem = {
+  index: number;
+  item: MCAppPreRenderedImgAsset;
+  position: { x: number; y: number };
+  status: MCAppAnimatedCardLayoutItemStatus;
+};
+
+export type MCAppAnimatedCardLayout = {
+  items: MCAppAnimatedCardLayoutItem[];
+};

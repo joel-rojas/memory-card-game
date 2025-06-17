@@ -1,10 +1,14 @@
-import React, { SetStateAction } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { type SetStateAction } from "react";
+import { useLocation, useNavigate } from "react-router";
 
-import { useSessionStorage } from "@hooks";
-import { useAppContext, useGameContext } from "@contexts";
-import { loadImages, MCAppState, MCGameRoutePath } from "@config";
-import { MCActionType, MCGameActionType } from "@store";
+import { useSessionStorage } from "@/hooks";
+import {
+  useAppContext,
+  useGameContext,
+  MCActionType,
+  MCGameActionType,
+} from "@/store";
+import { loadImages, type MCAppState, MCGameRoutePath } from "@/config";
 
 type RoutePathConfig = {
   isAllowed: boolean;
@@ -26,7 +30,7 @@ const useNextRoutePathByState = () => {
       isAllowed: false,
       runOnce: true,
       validPath: Object.values(MCGameRoutePath).includes(
-        location.pathname as MCGameRoutePath
+        location.pathname as (typeof MCGameRoutePath)[keyof typeof MCGameRoutePath]
       ),
     }),
     [location.pathname]
@@ -121,7 +125,7 @@ const useNextRoutePathByState = () => {
     setRoutePathConfig((prev) => ({
       ...prev,
       validPath: Object.values(MCGameRoutePath).includes(
-        location.pathname as MCGameRoutePath
+        location.pathname as (typeof MCGameRoutePath)[keyof typeof MCGameRoutePath]
       ),
     }));
   }, [location.pathname]);

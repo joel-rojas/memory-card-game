@@ -1,15 +1,17 @@
-import { MCGameMaxAvailableCards } from "./types";
+import type { MCGameMaxAvailableCards } from "./types";
 
-export function callAll(...fns: Array<Function | undefined>) {
-  return (...args: unknown[]) => {
+export function callAll<T extends unknown>(
+  ...fns: Array<((...args: T[]) => void) | undefined>
+) {
+  return (...args: T[]) => {
     fns.forEach((fn) => {
-      fn && fn(...args);
+      if (fn) fn(...args);
     });
   };
 }
 
 export function getRandomCharCode(
-  maxCards: MCGameMaxAvailableCards = 16
+  maxCards: MCGameMaxAvailableCards = 20
 ): number {
   const MAX_AVAILABLE_CARDS: MCGameMaxAvailableCards = maxCards;
   const INITIAL_CHAR_CODE = 97;
@@ -19,10 +21,10 @@ export function getRandomCharCode(
 export function getInitialRandomList<T extends string>(
   count: number
 ): string[] {
-  let nums = new Set<T>();
+  const nums = new Set<T>();
   while (nums.size < count) {
     const randomCard = `${String.fromCharCode(getRandomCharCode())}_card` as T;
-    !nums.has(randomCard) && nums.add(randomCard);
+    if (!nums.has(randomCard)) nums.add(randomCard);
   }
   return Array.from(nums);
 }
@@ -36,8 +38,23 @@ export function shuffleDeck<T extends unknown[]>(cardDeck: T): T {
   return cardDeck as T;
 }
 
-export function loadImages() {
-  const assets = require.context("@assets", true);
-  const assetsList = assets.keys().map((asset) => assets(asset));
-  return assetsList;
+export function loadImages(): string[] {
+  const modules = import.meta.glob("@/assets/**/*.{png,jpg,jpeg,svg}", {
+    eager: true,
+    import: "default",
+  });
+  return Object.values(modules) as string[];
+}
+
+export function getImageByName(imageName: string): string | null {
+  const modules = import.meta.glob("@/assets/**/*.{png,jpg,jpeg,svg}", {
+    eager: true,
+    import: "default",
+  });
+
+  const imagePath = Object.keys(modules).find((path) =>
+    path.includes(`${imageName}.`)
+  );
+
+  return imagePath ? (modules[imagePath] as string) : null;
 }

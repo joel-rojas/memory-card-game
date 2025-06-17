@@ -1,15 +1,15 @@
 import React from "react";
 
-import { Page, Header, Body, Modal } from "@components";
-import { AnimationFrame, MenuContent, ProgressiveMenu } from "@containers";
-import { useMainMenuSetup } from "@hooks";
+import { Page, Header, Body, Modal } from "@/components";
+import { AnimationFrame, MenuContent, ProgressiveMenu } from "@/containers";
+import { useMainMenuSetup } from "@/hooks";
 import {
-  MCGameButtonProps,
-  MCGameMainMenuContentKeys,
-  MCGameProgressiveMenuKeys,
-  MCGameUIPropsList,
+  type MCGameButtonProps,
+  type MCGameMainMenuContentKeys,
+  type MCGameProgressiveMenuKeys,
+  type MCGameUIPropsList,
   callAll,
-} from "@config";
+} from "@/config";
 
 const Home = () => {
   const {
@@ -26,7 +26,7 @@ const Home = () => {
     (
       currentStep: MCGameMainMenuContentKeys,
       nextMenu: (menu: MCGameMainMenuContentKeys) => void
-    ): JSX.Element => {
+    ): React.ReactElement => {
       const upcomingMenu =
         currentStep === "startGameMenu" ? "gameLevelMenu" : "startGameMenu";
 
@@ -35,7 +35,8 @@ const Home = () => {
       const addNextStepEvent = (uiField: MCGameProgressiveMenuKeys) => {
         (contentMap?.[uiField] as MCGameButtonProps).onClick = callAll(
           (contentMap?.[uiField] as MCGameButtonProps)?.onClick,
-          () => nextMenu(upcomingMenu)
+          (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+            nextMenu(upcomingMenu)
         );
       };
       addNextStepEvent(

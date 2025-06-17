@@ -1,17 +1,9 @@
-import React from "react";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router";
 
-import { router } from "@pages";
-import { AppProvider, GameProvider } from "@contexts";
+import { routerInstance } from "@/pages";
 
 function App() {
-  return (
-    <AppProvider>
-      <GameProvider>
-        <RouterProvider router={router} />
-      </GameProvider>
-    </AppProvider>
-  );
+  return <RouterProvider router={routerInstance} />;
 }
 
 export default App;

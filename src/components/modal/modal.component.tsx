@@ -1,12 +1,11 @@
 import React from "react";
 
-import { Button } from "@components";
+import { Button } from "@/components";
 
-interface ModalProps {
+interface ModalProps extends React.PropsWithChildren {
   isOpen: boolean;
   closeOnBackground?: boolean;
   onClose?: () => void | null;
-  children: React.ReactNode;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -31,10 +30,12 @@ const Modal: React.FC<ModalProps> = ({
 
   return isOpen ? (
     <div
+      data-testid="modalBackground"
       className="fixed z-50 left-0 top-0 w-full h-full overflow-auto bg-black/90"
       onClick={handleModalOnBackgroundClick}
     >
       <div
+        role="dialog"
         className="flex flex-col bg-white p-4 my-[10%] mx-auto w-1/2"
         onClick={handleModalContentClick}
       >

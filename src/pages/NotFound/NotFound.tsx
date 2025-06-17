@@ -1,7 +1,6 @@
-import React from "react";
-import { useRouteError } from "react-router-dom";
+import { useRouteError } from "react-router";
 
-import { Body, Text, Page } from "@components";
+import { Body, Text, Page } from "@/components";
 
 const NotFound = () => {
   useRouteError();

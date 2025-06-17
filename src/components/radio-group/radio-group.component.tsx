@@ -1,7 +1,7 @@
 import React from "react";
 
-import { RadioButton } from "@components";
-import { MCGameRadioGroupProps, MCGameRadioButtonProps } from "@config";
+import { RadioButton } from "@/components";
+import type { MCGameRadioGroupProps, MCGameRadioButtonProps } from "@/config";
 
 const RadioGroup: React.FC<MCGameRadioGroupProps> = ({ options }) => {
   const renderChildren = (children: MCGameRadioGroupProps["options"]) => {
@@ -21,7 +21,7 @@ const RadioGroup: React.FC<MCGameRadioGroupProps> = ({ options }) => {
       React.isValidElement<React.ReactElement<MCGameRadioButtonProps>[]>(
         children
       );
-    if (!children || (!isValidEl && !isValidRadioButtonArray)) {
+    if (!isValidEl && !isValidRadioButtonArray) {
       return null;
     }
     if (isValidEl) {

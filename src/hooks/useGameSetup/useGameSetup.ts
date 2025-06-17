@@ -1,17 +1,21 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
-import { useAppContext, useGameContext } from "@contexts";
 import {
-  MCGameCard,
-  MCGameCurrentModalActionKeys,
-  MCGameCurrentUIProps,
-  MCGameModalType,
+  type MCGameCard,
+  type MCGameCurrentModalActionKeys,
+  type MCGameCurrentUIProps,
+  type MCGameModalType,
   MCGameRoutePath,
-  MCGameUIPropsList,
-  MCGameUISetPropsMap,
-} from "@config";
-import { MCActionType, MCGameActionType } from "@store";
+  type MCGameUIPropsList,
+  type MCGameUISetPropsMap,
+} from "@/config";
+import {
+  MCActionType,
+  MCGameActionType,
+  useAppContext,
+  useGameContext,
+} from "@/store";
 
 const useGameSetup = () => {
   const navigate = useNavigate();
@@ -28,7 +32,7 @@ const useGameSetup = () => {
 
   const handleCardOnClick = React.useCallback(
     (
-      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      _: React.MouseEvent<HTMLDivElement, MouseEvent>,
       card: MCGameCard
     ): void => {
       if (
@@ -48,14 +52,17 @@ const useGameSetup = () => {
   const handleResetGameClick = () => {
     appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "new" });
     gameProgress === "win"
-      ? gameDispatch({ type: MCGameActionType.START_DECK, payload: imageAssets })
+      ? gameDispatch({
+          type: MCGameActionType.START_DECK,
+          payload: imageAssets,
+        })
       : gameDispatch({ type: MCGameActionType.RESET_DECK });
     appDispatch({
       type: MCActionType.CHANGE_PROGRESS_BY_VALUE,
       payload: "inProgress",
     });
     setCountdown(gameLevel.countdown);
-    setShowGameModal({ ...showGameModal, isShown: false });
+    setShowGameModal((prev) => ({ ...prev, isShown: false }));
   };
 
   const handlePauseGameClick = () => {
@@ -65,14 +72,18 @@ const useGameSetup = () => {
 
   const handleResumeGameClick = () => {
     appDispatch({ type: MCActionType.CHANGE_STATUS, payload: "resume" });
-    setShowGameModal({ ...showGameModal, isShown: false });
+    setShowGameModal((prev) => ({ ...prev, isShown: false }));
   };
 
   const handleMainMenuClick = () => {
-    appDispatch({ type: MCActionType.CLEAR_GAME });
-    gameDispatch({ type: MCGameActionType.CLEAR_GAME });
-    navigate(MCGameRoutePath.HOME);
-    setShowGameModal({ ...showGameModal, isShown: false });
+    React.startTransition(() => {
+      appDispatch({ type: MCActionType.CLEAR_GAME });
+      gameDispatch({ type: MCGameActionType.CLEAR_GAME });
+      setShowGameModal((prev) => ({ ...prev, isShown: false }));
+      React.startTransition(() => {
+        navigate(MCGameRoutePath.HOME, { replace: true });
+      });
+    });
   };
 
   const handleShowModalClick = (type: MCGameModalType["type"]) => {

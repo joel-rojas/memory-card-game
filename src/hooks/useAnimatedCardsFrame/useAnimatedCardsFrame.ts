@@ -1,26 +1,18 @@
 import React from "react";
 
-import { useWindowResize } from "@hooks";
-import { MCAppPreRenderedImgAsset } from "@config";
-
-type LayoutItemStatus = "entering" | "exiting";
-
-type LayoutItem = {
-  index: number;
-  item: MCAppPreRenderedImgAsset;
-  position: { x: number; y: number };
-  status: LayoutItemStatus;
-};
-
-type Layout = {
-  items: LayoutItem[];
-};
-
+import { useWindowResize } from "@/hooks";
+import type {
+  MCAppPreRenderedImgAsset,
+  MCAppAnimatedCardLayout,
+  MCAppAnimatedCardLayoutItem,
+} from "@/config";
 
 const useAnimatedCardsFrame = (cardDeck: MCAppPreRenderedImgAsset[]) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [counter, setCounter] = React.useState(-1);
-  const [layout, setLayout] = React.useState<Layout | null>(null);
+  const [layout, setLayout] = React.useState<MCAppAnimatedCardLayout | null>(
+    null
+  );
   const screenDimensions = useWindowResize();
 
   /**
@@ -42,10 +34,10 @@ const useAnimatedCardsFrame = (cardDeck: MCAppPreRenderedImgAsset[]) => {
     let x = Math.random() * containerWidth;
     let y = Math.random() * containerHeight;
     if (x + imgWidth / 2 > containerWidth) {
-      x -= (isMobile ? imgWidth * 2 : imgWidth);
+      x -= isMobile ? imgWidth * 2 : imgWidth;
     }
     if (y + imgWidth / 2 > containerHeight) {
-      y -= (isMobile ? imgWidth * 2 : imgWidth);
+      y -= isMobile ? imgWidth * 2 : imgWidth;
     }
     if (x < imgWidth / 2) {
       x += imgWidth / 2;
@@ -59,10 +51,12 @@ const useAnimatedCardsFrame = (cardDeck: MCAppPreRenderedImgAsset[]) => {
   /**
    * @description Add a layout item to the layout
    * @param {number} index - The index of the card
-   * @returns {LayoutItem} - The layout item
+   * @returns {MCAppAnimatedCardLayoutItem} - The layout item
    */
   const setupLayoutItem = React.useCallback(
-    (params: Partial<LayoutItem>): LayoutItem => {
+    (
+      params: Partial<MCAppAnimatedCardLayoutItem>
+    ): MCAppAnimatedCardLayoutItem => {
       const {
         index = 0,
         item = cardDeck[index % cardDeck.length],
@@ -118,7 +112,7 @@ const useAnimatedCardsFrame = (cardDeck: MCAppPreRenderedImgAsset[]) => {
   React.useEffect(() => {
     if (!layout || counter === -1) return;
 
-    let timerId: NodeJS.Timer = setInterval(() => {
+    const timerId = setInterval(() => {
       let currentIdx = counter;
       let nextIndex = counter + MAX_ITEMS - 1;
 
@@ -143,7 +137,7 @@ const useAnimatedCardsFrame = (cardDeck: MCAppPreRenderedImgAsset[]) => {
             status: "exiting",
           });
         }),
-      } as Layout);
+      } as MCAppAnimatedCardLayout);
 
       setCounter((prev) => prev + MAX_ITEMS);
     }, 1500);

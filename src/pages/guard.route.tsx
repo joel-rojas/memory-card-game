@@ -1,16 +1,12 @@
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 
-import { MCGameRoutePath } from "@config";
+import { MCGameRoutePath } from "@/config";
 
-interface GuardRouteProps {
-  children: JSX.Element;
+interface GuardRouteProps extends React.PropsWithChildren {
   isPageAllowed: boolean;
 }
 
-const GuardRoute: React.FC<GuardRouteProps> = ({
-  children,
-  isPageAllowed,
-}) => {
+const GuardRoute: React.FC<GuardRouteProps> = ({ children, isPageAllowed }) => {
   return (
     <>{isPageAllowed ? children : <Navigate to={MCGameRoutePath.HOME} />}</>
   );

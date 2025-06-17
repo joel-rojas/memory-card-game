@@ -1,6 +1,6 @@
 import React from "react";
 
-import { MCAppScreenSizes } from "@config";
+import type { MCAppScreenSizes } from "@/config";
 
 const useWindowResize = () => {
   const calculateScreenType = React.useCallback(

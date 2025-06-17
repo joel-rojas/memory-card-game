@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
 
-const useSessionStorage = (key: string, initialValue: unknown = null) => {
-  const [value, setValue] = useState<unknown>(() => {
+const useSessionStorage = <T>(
+  key: string,
+  initialValue: T | null = null
+): [T, Dispatch<SetStateAction<T>>] => {
+  const [value, setValue] = useState<T>(() => {
     const storedValue = window.sessionStorage.getItem(key);
     if (storedValue) return JSON.parse(storedValue);
     if (

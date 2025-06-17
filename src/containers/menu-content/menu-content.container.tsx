@@ -1,7 +1,7 @@
 import React from "react";
 
-import { MCGameUIPropsList, MCGameCurrentUIProps } from "@config";
-import { Button, Text, RadioGroup } from "@components";
+import type { MCGameUIPropsList, MCGameCurrentUIProps } from "@/config";
+import { Button, Text, RadioGroup } from "@/components";
 
 interface MenuContentProps {
   contentList: MCGameUIPropsList;
@@ -47,6 +47,7 @@ const MenuContent: React.FC<MenuContentProps> = ({
 
   return (
     <div
+      role="presentation"
       className={`flex flex-col items-center justify-center ${
         fullWidth ? "w-full" : "w-auto"
       }`}
