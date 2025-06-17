@@ -1,0 +1,15 @@
+[build]
+  command = "yarn run build"
+  publish = "build"
+
+# Redirect root path to /home
+[[redirects]]
+  from = "/"
+  to = "/home"
+  status = 301
+
+# SPA fallback for all other routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
