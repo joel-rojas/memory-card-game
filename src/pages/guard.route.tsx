@@ -2,8 +2,7 @@ import { Navigate } from "react-router";
 
 import { MCGameRoutePath } from "@/config";
 
-interface GuardRouteProps {
-  children: React.ReactNode;
+interface GuardRouteProps extends React.PropsWithChildren {
   isPageAllowed: boolean;
 }
 

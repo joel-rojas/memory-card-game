@@ -1,10 +1,9 @@
 import React from "react";
 
-interface BodyProps {
+interface BodyProps extends React.PropsWithChildren {
   fullyCentered?: boolean;
   asColumn?: boolean;
   asContainer?: boolean;
-  children: React.ReactNode;
 }
 
 /**

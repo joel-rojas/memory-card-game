@@ -1,6 +1,5 @@
 import React from "react";
-interface HeaderProps {
-  children: React.ReactNode;
+interface HeaderProps extends React.PropsWithChildren {
   flex?: number;
 }
 const Header: React.FC<HeaderProps> = ({ children, flex = -1 }) => {

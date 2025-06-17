@@ -1,10 +1,6 @@
-export interface MCSingleComponentProps {
-  children: React.ReactNode;
-}
-
 export type MCGameMaxCardsInDeck = 10;
 
-export type MCGameMaxAvailableCards = 16 | number;
+export type MCGameMaxAvailableCards = 20 | number;
 
 export type MCGameLevelKeys = "easy" | "medium" | "hard";
 

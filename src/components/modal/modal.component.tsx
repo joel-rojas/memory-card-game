@@ -2,11 +2,10 @@ import React from "react";
 
 import { Button } from "@/components";
 
-interface ModalProps {
+interface ModalProps extends React.PropsWithChildren {
   isOpen: boolean;
   closeOnBackground?: boolean;
   onClose?: () => void | null;
-  children: React.ReactNode;
 }
 
 const Modal: React.FC<ModalProps> = ({

@@ -1,18 +1,16 @@
 import React from "react";
 
-interface BoardProps {
-  children: React.ReactNode | React.ReactNode[];
-}
-
 /**
  * Board component that arranges its children in a responsive grid layout.
  *
  * @component
  * @param {Object} props - Component props.
- * @param {React.ReactNode | React.ReactNode[]} props.children - The child elements to be displayed within the board.
+ * @param {React.ReactNode} props.children - The child elements to be displayed within the board.
  * @returns {React.ReactElement} The rendered board component.
  */
-const Board: React.FC<BoardProps> = ({ children }: BoardProps) => {
+const Board: React.FC<React.PropsWithChildren> = ({
+  children,
+}: React.PropsWithChildren): React.ReactElement => {
   return (
     <div
       id="board"
