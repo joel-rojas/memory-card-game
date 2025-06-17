@@ -36,7 +36,7 @@ function generateDeck<T extends MCGameCardDeck>(
     const newItem = {
       id,
       uid,
-      src: imgAssets.find((asset) => asset.imgId.includes(id))!.src,
+      src: imgAssets.find((asset) => asset.imgId.startsWith(id))!.src,
       isMatched: false,
       isHidden: true,
     };
