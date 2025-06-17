@@ -29,13 +29,14 @@ function generateDeck<T extends MCGameCardDeck>(
   const list: MCGameCardDeck = [];
   let i = 0;
   let count = 0;
+  console.log("imgAssets", imgAssets);
   while (i < MAX_CARDS) {
     const id = randomList[i];
     const uid = `${id}_${++count}`;
     const newItem = {
       id,
       uid,
-      src: imgAssets.find((asset) => asset.imgId === id)!.src,
+      src: imgAssets.find((asset) => asset.imgId.includes(id))!.src,
       isMatched: false,
       isHidden: true,
     };
@@ -125,7 +126,7 @@ export function gameReducer(
       return {
         ...gameInitialState,
         cardDeck: [],
-        error: 'No loaded image assets',
+        error: "No loaded image assets",
       };
     }
     case MCGameActionType.MATCHED_CARDS: {
