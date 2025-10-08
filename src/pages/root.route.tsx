@@ -2,18 +2,24 @@ import { Route, Routes } from "react-router";
 
 import { Home, Play } from "@/pages";
 import { MCGameRoutePath } from "@/config";
-import { useNextRoutePathByState } from "@/hooks";
+import { usePlayRouteGuard } from "@/hooks";
 import GuardRoute from "./guard.route";
 
 const Root = () => {
-  const isAllowed = useNextRoutePathByState();
+  const guardConfig = usePlayRouteGuard();
+
   return (
     <Routes>
       <Route path={MCGameRoutePath.HOME} element={<Home />} />
       <Route
         path={MCGameRoutePath.PLAY}
         element={
-          <GuardRoute isPageAllowed={isAllowed}>
+          <GuardRoute
+            isPageAllowed={guardConfig.canAccess}
+            isLoading={guardConfig.isLoading}
+            error={guardConfig.error}
+            fallbackPath={guardConfig.fallbackPath}
+          >
             <Play />
           </GuardRoute>
         }
