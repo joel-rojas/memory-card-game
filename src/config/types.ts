@@ -23,6 +23,8 @@ export type MCGameCard = {
 export type MCAppPreRenderedImgAsset = {
   src: string;
   imgId: string;
+  fileName?: string;
+  originalPath?: string;
 };
 
 export type MCGameCardDeck = MCGameCard[];
@@ -36,12 +38,22 @@ export interface MCAppState {
   gameStatus: MCGameStatus;
   gameProgress: MCGameProgress;
   imageAssets: MCAppPreRenderedImgAsset[];
+  // Arcade game selection
+  // selectedGameMode: 'classic' | 'arcade';
+  // selectedArcadeMode?: import('./arcade-game.types').ArcadeGameMode;
+  // selectedDifficulty?: import('./arcade-game.types').ArcadeDifficulty;
 }
+
+// export type MCGamePhase = 'memorization' | 'playing' | 'completed';
 
 export interface MCGameState {
   error: string | null;
   cardDeck: MCGameCardDeck;
   cardsShown: MCGameCardsShown;
+  coverCard: string | null | undefined;
+  // gamePhase: MCGamePhase;
+  // memorizationTimeLeft: number;
+  // studySequence: MCGameCard[];
 }
 
 export type MCGameCardsShown = {
@@ -136,15 +148,25 @@ export type MCGameMenuKeys =
   | MCGameStartGameMenuKeys
   | MCGamePlayMenuKeys;
 
-export type MCGameMainMenuContentKeys = "startGameMenu" | "gameLevelMenu";
+export type MCGameMainMenuContentKeys =
+  | "startGameMenu"
+  | "gameLevelMenu"
+  // | "gameTypeMenu"
+  // | "arcadeGameMenu";
 
 export type MCGameProgressiveMenuKeys =
   | MCGameStartGameMenuKeys
   | MCGamePlayMenuKeys;
+// | MCGameTypeMenuKeys
+// | MCArcadeGameMenuKeys;
 
 export type MCGameStartGameMenuKeys = "startGame" | "about";
 
 export type MCGamePlayMenuKeys = "backToStart" | "gameLevel" | "play";
+
+// export type MCGameTypeMenuKeys = "backToStart" | "gameTypeSelection" | "continue";
+
+// export type MCArcadeGameMenuKeys = "backToStart" | "arcadeGameSelection" | "difficultySelection" | "playArcade";
 
 export type MCAppAnimatedCardLayoutItemStatus = "entering" | "exiting";
 
@@ -158,3 +180,13 @@ export type MCAppAnimatedCardLayoutItem = {
 export type MCAppAnimatedCardLayout = {
   items: MCAppAnimatedCardLayoutItem[];
 };
+
+export type PartialAppState = Pick<
+  MCAppState,
+  "gameLevel" | "gameProgress" | "gameStatus"
+> & { hasLoadedAssets?: boolean };
+
+export type AppStateFromSessionStorage = [
+  PartialAppState | null,
+  React.Dispatch<React.SetStateAction<PartialAppState | null>>
+];
