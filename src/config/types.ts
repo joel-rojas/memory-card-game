@@ -38,22 +38,12 @@ export interface MCAppState {
   gameStatus: MCGameStatus;
   gameProgress: MCGameProgress;
   imageAssets: MCAppPreRenderedImgAsset[];
-  // Arcade game selection
-  // selectedGameMode: 'classic' | 'arcade';
-  // selectedArcadeMode?: import('./arcade-game.types').ArcadeGameMode;
-  // selectedDifficulty?: import('./arcade-game.types').ArcadeDifficulty;
 }
-
-// export type MCGamePhase = 'memorization' | 'playing' | 'completed';
 
 export interface MCGameState {
   error: string | null;
   cardDeck: MCGameCardDeck;
   cardsShown: MCGameCardsShown;
-  coverCard: string | null | undefined;
-  // gamePhase: MCGamePhase;
-  // memorizationTimeLeft: number;
-  // studySequence: MCGameCard[];
 }
 
 export type MCGameCardsShown = {
@@ -151,22 +141,15 @@ export type MCGameMenuKeys =
 export type MCGameMainMenuContentKeys =
   | "startGameMenu"
   | "gameLevelMenu"
-  // | "gameTypeMenu"
-  // | "arcadeGameMenu";
 
 export type MCGameProgressiveMenuKeys =
   | MCGameStartGameMenuKeys
   | MCGamePlayMenuKeys;
-// | MCGameTypeMenuKeys
-// | MCArcadeGameMenuKeys;
 
 export type MCGameStartGameMenuKeys = "startGame" | "about";
 
 export type MCGamePlayMenuKeys = "backToStart" | "gameLevel" | "play";
 
-// export type MCGameTypeMenuKeys = "backToStart" | "gameTypeSelection" | "continue";
-
-// export type MCArcadeGameMenuKeys = "backToStart" | "arcadeGameSelection" | "difficultySelection" | "playArcade";
 
 export type MCAppAnimatedCardLayoutItemStatus = "entering" | "exiting";
 

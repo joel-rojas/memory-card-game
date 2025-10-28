@@ -1,7 +1,7 @@
 import React from "react";
 
 import type { MCGameCard } from "@/config";
-import { getImageByName } from "@/config/utils";
+import { getCardSourceFromCache } from "@/config/utils";
 
 interface CardProps {
   card: MCGameCard;
@@ -29,7 +29,16 @@ const Card: React.FC<CardProps> = ({
   onTap,
 }: CardProps): React.ReactElement => {
   const { isHidden } = card;
-  const coverCardSrc = getImageByName("cover_card");
+  const [coverCardSrc, setCoverCardSrc] = React.useState<string | null>(null);
+
+  // Load cover card source on mount
+  React.useEffect(() => {
+    (async () => {
+      const coverSrc = await getCardSourceFromCache("cover_card");
+      setCoverCardSrc(coverSrc);
+    })();
+
+  }, []);
 
   return (
     <div

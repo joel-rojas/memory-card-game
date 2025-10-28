@@ -83,7 +83,7 @@ const useGameStateManager = () => {
     if (routeState.shouldInitializeGame) {
       gameDispatch({
         type: MCGameActionType.START_DECK,
-        payload: { deck: imageAssets },
+        payload: imageAssets,
       });
     }
   }, [routeState.shouldInitializeGame, gameDispatch]);

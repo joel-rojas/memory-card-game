@@ -29,7 +29,6 @@ function generateDeck<T extends MCGameCardDeck>(
   const list: MCGameCardDeck = [];
   let i = 0;
   let count = 0;
-  console.log("imgAssets", imgAssets);
   while (i < MAX_CARDS) {
     const id = randomList[i];
     const uid = `${id}_${++count}`;

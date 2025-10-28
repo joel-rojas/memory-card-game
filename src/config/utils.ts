@@ -82,7 +82,6 @@ export const cacheAsset = async (
     const response = await fetchAsset(asset.src);
     await setCachedResponse(cacheKey, response);
 
-    console.log(`Cached asset: ${asset.fileName}`);
     return true;
   } catch (error) {
     console.warn(`Failed to cache asset ${asset.fileName}:`, error);
@@ -93,15 +92,6 @@ export const cacheAsset = async (
 export const cacheAssets = async (
   assets: MCAppPreRenderedImgAsset[]
 ): Promise<void> => {
-  const cachePromises = assets.map(cacheAsset);
-  const results = await Promise.allSettled(cachePromises);
-
-  const successCount = results.filter(
-    (result) => result.status === "fulfilled" && result.value
-  ).length;
-
-  console.log(`Successfully cached ${successCount}/${assets.length} assets`);
-
   // Cache the manifest
   await cacheManifest(assets);
 };
@@ -165,7 +155,6 @@ export const loadCachedAssets = async (): Promise<MCAppPreRenderedImgAsset[]> =>
     ) as MCAppPreRenderedImgAsset[];
 
     if (validAssets.length === cachedManifest.length) {
-      console.log("Successfully loaded all assets from cache");
       return validAssets;
     }
 
@@ -178,7 +167,6 @@ export const loadCachedAssets = async (): Promise<MCAppPreRenderedImgAsset[]> =>
 };
 
 export const loadFreshAssets = async (): Promise<MCAppPreRenderedImgAsset[]> => {
-  console.log("Loading fresh assets...");
   const assets = getAssetMetadata();
 
   if (assets.length > 0) {
@@ -197,7 +185,6 @@ export const loadAssets = async (): Promise<MCAppPreRenderedImgAsset[]> => {
   const cachedAssets = await loadCachedAssets();
 
   if (cachedAssets.length > 0) {
-    console.log("Using cached assets:", cachedAssets.length);
     return cachedAssets;
   }
 

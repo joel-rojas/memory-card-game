@@ -38,13 +38,6 @@ const useAssetLoader = () => {
         const assets = await loadAssets();
 
         if (assets.length > 0) {
-          console.log("📦 Assets loaded successfully:", {
-            totalCount: assets.length,
-            assetIds: assets.map(a => a.imgId),
-            coverCardAsset: assets.find(a => a.imgId.includes('cover_card')),
-            allAssets: assets
-          });
-          
           appDispatch({ type: MCActionType.LOAD_ASSETS, payload: assets });
           setAppStorage({
             ...(appStorage as PartialAppState),
