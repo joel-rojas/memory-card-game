@@ -15,20 +15,14 @@ const useSessionSync = () => {
 
   // Session storage sync
   React.useEffect(() => {
-    setAppStateStorage({
-      ...appStateStorage,
+    setAppStateStorage((currentStateStorage) => ({
+      ...currentStateStorage,
       gameLevel,
       gameProgress,
       gameStatus,
       hasLoadedAssets: imageAssets.length > 0,
-    });
-  }, [
-    gameLevel,
-    gameProgress,
-    gameStatus,
-    imageAssets.length,
-    setAppStateStorage,
-  ]);
+    }));
+  }, [gameLevel, gameProgress, gameStatus, imageAssets.length]);
 
   // Page visibility cleanup - event handling
   React.useEffect(() => {

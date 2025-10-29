@@ -17,13 +17,9 @@ const useAssetLoader = () => {
 
   // Asset loading effect
   React.useEffect(() => {
-    const persistAssets = async () => {
-      if (
-        isLoading ||
-        (appState.imageAssets.length > 0 && appStorage?.hasLoadedAssets)
-      )
-        return;
+    if (appState.imageAssets.length > 0 && appStorage?.hasLoadedAssets) return;
 
+    const persistAssets = async () => {
       if (appStorage?.hasLoadedAssets && appState.imageAssets.length === 0) {
         setAppStorage({
           ...(appStorage as PartialAppState),
@@ -61,13 +57,7 @@ const useAssetLoader = () => {
     };
 
     persistAssets();
-  }, [
-    appStorage?.hasLoadedAssets,
-    appDispatch,
-    isLoading,
-    appState.imageAssets.length,
-    setAppStorage,
-  ]);
+  }, [appStorage, appState.imageAssets.length]);
 
   return { isLoading, error };
 };

@@ -16,6 +16,7 @@ export type MCGameCard = {
   id: string;
   uid: string;
   src: string;
+  coverCardSrc: string;
   isHidden: boolean;
   isMatched: boolean;
 };
@@ -140,7 +141,7 @@ export type MCGameMenuKeys =
 
 export type MCGameMainMenuContentKeys =
   | "startGameMenu"
-  | "gameLevelMenu"
+  | "gameLevelMenu";
 
 export type MCGameProgressiveMenuKeys =
   | MCGameStartGameMenuKeys

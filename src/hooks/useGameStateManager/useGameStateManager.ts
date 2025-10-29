@@ -71,11 +71,10 @@ const useGameStateManager = () => {
     };
   }, [
     location.pathname,
-    imageAssets.length,
     appStateStorage?.gameProgress,
     appStateStorage?.gameStatus,
     appStateStorage?.hasLoadedAssets,
-    imageAssets,
+    imageAssets.length,
   ]);
 
   // Game initialization logic
@@ -86,7 +85,7 @@ const useGameStateManager = () => {
         payload: imageAssets,
       });
     }
-  }, [routeState.shouldInitializeGame, gameDispatch]);
+  }, [routeState.shouldInitializeGame, imageAssets, gameDispatch]);
 
   // Game state reset - state updates
   React.useEffect(() => {

@@ -206,7 +206,7 @@ export const getCardSourceFromCache = async (name: string): Promise<string | nul
     // Fallback to Vite glob
     return getCardSrc(name);
   } catch (error) {
-    console.error('Failed to get cover card from cache:', error);
+    console.error('Failed to get card from cache:', error);
     
     // Final fallback to Vite glob
     const assets = getAssetMetadata();

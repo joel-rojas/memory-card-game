@@ -35,6 +35,9 @@ function generateDeck<T extends MCGameCardDeck>(
     const newItem = {
       id,
       uid,
+      coverCardSrc: imgAssets.find((asset) =>
+        asset.imgId.startsWith("cover_card")
+      )!.src,
       src: imgAssets.find((asset) => asset.imgId.startsWith(id))!.src,
       isMatched: false,
       isHidden: true,
