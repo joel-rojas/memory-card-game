@@ -26,7 +26,8 @@ const useGameStateManager = () => {
   const { state: appState, dispatch: appDispatch } = useAppContext();
   const gameDispatch = useGameDispatch();
   const { imageAssets } = appState;
-  // Compute all routing logic in one place
+  const hasInitializedRef = React.useRef(false);
+
   const routeState = React.useMemo<RouteState>(() => {
     const currentPath = location.pathname;
     const isValidPath = Object.values(MCGameRoutePath).includes(
@@ -34,31 +35,36 @@ const useGameStateManager = () => {
     );
 
     const isPlayRoute = currentPath === MCGameRoutePath.PLAY;
-    const hasRequiredAssets = !!(
-      appStateStorage?.hasLoadedAssets && imageAssets.length > 0
-    );
+
+    const hasCacheFlag = Boolean(appStateStorage?.hasLoadedAssets);
+    const hasInMemoryAssets = imageAssets.length > 0;
+
+    // Allow staying on /play if either cached or loaded
+    const hasRequiredAssets = hasCacheFlag || hasInMemoryAssets;
     const isAllowed = isPlayRoute && hasRequiredAssets;
 
-    // Determine if we should initialize game from storage
+    // Only initialize when assets are actually in memory and first time
     const shouldInitializeGame =
       isAllowed &&
+      hasInMemoryAssets &&
       appStateStorage?.gameProgress === "idle" &&
-      appStateStorage?.gameStatus === "new";
+      appStateStorage?.gameStatus === "new" &&
+      !hasInitializedRef.current;
 
-    // Determine if we should reset game state
-    const shouldResetGame = !!(
-      isAllowed &&
-      shouldInitializeGame &&
-      isValidPath
+    const shouldResetGame = Boolean(
+      isAllowed && shouldInitializeGame && isValidPath
     );
 
-    // Determine navigation target
+    // Navigation target
     let navigationTarget: string | null = null;
     if (isValidPath) {
       if (isAllowed && currentPath !== MCGameRoutePath.PLAY) {
         navigationTarget = MCGameRoutePath.PLAY;
       } else if (!isAllowed && currentPath !== MCGameRoutePath.HOME) {
-        navigationTarget = MCGameRoutePath.HOME;
+        // If user is on /play and we have a cache flag, suppress redirect (stay put while hydrating)
+        if (!(isPlayRoute && hasCacheFlag)) {
+          navigationTarget = MCGameRoutePath.HOME;
+        }
       }
     }
 
@@ -77,15 +83,23 @@ const useGameStateManager = () => {
     imageAssets.length,
   ]);
 
-  // Game initialization logic
+  // Initialize game only once after assets are loaded into memory
   React.useEffect(() => {
     if (routeState.shouldInitializeGame) {
       gameDispatch({
         type: MCGameActionType.START_DECK,
         payload: imageAssets,
       });
+      hasInitializedRef.current = true;
     }
   }, [routeState.shouldInitializeGame, imageAssets, gameDispatch]);
+
+  // Optional: reset the init flag when leaving /play
+  React.useEffect(() => {
+    if (location.pathname !== MCGameRoutePath.PLAY) {
+      hasInitializedRef.current = false;
+    }
+  }, [location.pathname]);
 
   // Game state reset - state updates
   React.useEffect(() => {

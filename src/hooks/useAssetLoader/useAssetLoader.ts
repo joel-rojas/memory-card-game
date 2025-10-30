@@ -20,13 +20,6 @@ const useAssetLoader = () => {
     if (appState.imageAssets.length > 0 && appStorage?.hasLoadedAssets) return;
 
     const persistAssets = async () => {
-      if (appStorage?.hasLoadedAssets && appState.imageAssets.length === 0) {
-        setAppStorage({
-          ...(appStorage as PartialAppState),
-          hasLoadedAssets: false,
-        });
-      }
-
       setIsLoading(true);
       setError(null);
 
@@ -49,7 +42,7 @@ const useAssetLoader = () => {
         console.error("Error loading assets:", err);
         setAppStorage({
           ...(appStorage as PartialAppState),
-          hasLoadedAssets: false,
+          hasLoadedAssets: appStorage?.hasLoadedAssets ?? false,
         });
       } finally {
         setIsLoading(false);

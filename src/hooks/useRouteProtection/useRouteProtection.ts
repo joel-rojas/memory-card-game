@@ -1,21 +1,31 @@
 import * as React from "react";
-import { useNavigate } from "react-router";
-
+import { useNavigate, useLocation } from "react-router";
 import { useGameStateManager } from "@/hooks";
+import { MCGameRoutePath } from "@/config";
 
 const useRouteProtection = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const routeState = useGameStateManager();
-  // Navigation logic
+
   React.useEffect(() => {
     if (!routeState.isValidPath) {
       throw new Error("Invalid route path");
     }
 
-    if (routeState.navigationTarget) {
-      navigate(routeState.navigationTarget);
+    // Only navigate forward to PLAY; avoid kicking from PLAY -> HOME.
+    if (
+      routeState.navigationTarget === MCGameRoutePath.PLAY &&
+      location.pathname !== MCGameRoutePath.PLAY
+    ) {
+      navigate(MCGameRoutePath.PLAY);
     }
-  }, [routeState.isValidPath, routeState.navigationTarget, navigate]);
+  }, [
+    routeState.isValidPath,
+    routeState.navigationTarget,
+    navigate,
+    location.pathname,
+  ]);
 
   return routeState.isAllowed;
 };
