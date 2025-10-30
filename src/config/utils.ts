@@ -1,5 +1,5 @@
 import { createCacheKey, getCachedResponse, MANIFEST_KEY, setCachedResponse } from "./cache.utils";
-import type { MCAppPreRenderedImgAsset, MCGameMaxAvailableCards } from "./types";
+import type { MCAppPreRenderedImgAsset, MCGameCardDeck, MCGameMaxAvailableCards, MCGameProgress } from "./types";
 
 export function callAll<T extends unknown>(
   ...fns: Array<((...args: T[]) => void) | undefined>
@@ -37,6 +37,35 @@ export function shuffleDeck<T extends unknown[]>(cardDeck: T): T {
     [cardDeck[i], cardDeck[j]] = [cardDeck[j], cardDeck[i]];
   }
   return cardDeck as T;
+}
+
+function determineCardListMatches(cardDeck: MCGameCardDeck): boolean {
+  if (cardDeck.length === 0) return false;
+  return cardDeck.every((card) => card.isMatched);
+}
+
+export const determineGameProgress = (
+  status: MCGameProgress,
+  cardDeck: MCGameCardDeck,
+  currentCountdown: number
+): MCGameProgress => {
+  const allCardsMatched = determineCardListMatches(cardDeck);
+  if (status === "idle" && !allCardsMatched && currentCountdown > 0) {
+    return "inProgress";
+  }
+  if (status === "inProgress") {
+    if (currentCountdown > 0 && allCardsMatched) {
+      return "win";
+    }
+    if (currentCountdown <= 0 && !allCardsMatched) {
+      return "lose";
+    }
+    return "inProgress";
+  }
+  if (status === "win" || status === "lose") {
+    return status;
+  }
+  return "idle";
 }
 
 function loadAssetModule() {

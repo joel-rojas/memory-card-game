@@ -9,6 +9,7 @@ import {
   MCGameRoutePath,
   type MCGameUIPropsList,
   type MCGameUISetPropsMap,
+  determineGameProgress,
 } from "@/config";
 import {
   MCActionType,
@@ -16,6 +17,11 @@ import {
   useAppContext,
   useGameContext,
 } from "@/store";
+
+type MCGameProgressCheckSignature = {
+  signature: string;
+  countdown: number;
+};
 
 const useGameSetup = () => {
   const navigate = useNavigate();
@@ -28,6 +34,10 @@ const useGameSetup = () => {
   const { gameStatus, gameLevel, gameProgress, imageAssets } = appState;
   const { cardDeck } = gameState;
   const [countdown, setCountdown] = React.useState<number>(gameLevel.countdown);
+  const prevProgressCheck = React.useRef<MCGameProgressCheckSignature>({
+    signature: "",
+    countdown: gameLevel.countdown,
+  });
   const MAX_CARDS_SHOWN_PER_TURN = 2;
 
   const handleCardOnClick = React.useCallback(
@@ -180,16 +190,37 @@ const useGameSetup = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown, gameStatus, gameProgress]);
 
+  // Generate a signature for the current card deck state
+  const getDeckSignature = (deck: MCGameCard[]) =>
+    deck
+      .map(
+        ({ uid, isMatched, isHidden }) =>
+          `${uid}:${Number(isMatched)}:${Number(isHidden)}`
+      )
+      .join("|");
+
   // Check game progress on every shown card and countdown value change
   React.useEffect(() => {
-    if (countdown >= 0) {
+    const prev = prevProgressCheck.current;
+    const currentSignature = getDeckSignature(cardDeck);
+
+    if (prev.signature === currentSignature && prev.countdown === countdown)
+      return;
+
+    const nextProgress = determineGameProgress(
+      appState.gameProgress,
+      cardDeck,
+      countdown
+    );
+    if (nextProgress !== appState.gameProgress) {
       appDispatch({
         type: MCActionType.CHANGE_PROGRESS,
         payload: { cardDeck, countdown },
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDeck, countdown]);
+
+    prevProgressCheck.current = { signature: currentSignature, countdown };
+  }, [cardDeck, countdown, appState.gameProgress, appDispatch]);
 
   // Check if a pair of cards shown are matched with buffer time
   React.useEffect(() => {
