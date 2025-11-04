@@ -17,8 +17,12 @@ const RootProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = React.useReducer(rootReducer, {
     ...initialState,
     app: {
-      ...appInitialState, // Ensure all required properties are present
-      ...(appStateStorage || {}), // Only spread if not null
+      ...appInitialState,
+      ...(appStateStorage && {
+        gameLevel: appStateStorage.gameLevel ?? appInitialState.gameLevel,
+        gameProgress: appStateStorage.gameProgress ?? appInitialState.gameProgress,
+        gameStatus: appStateStorage.gameStatus ?? appInitialState.gameStatus,
+      }),
       imageAssets,
     } as MCAppState,
   });

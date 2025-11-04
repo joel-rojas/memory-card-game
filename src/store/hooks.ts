@@ -22,7 +22,7 @@ export const useSelector = <T>(selector: (state: RootState) => T) => {
 export const useAppState = () => {
   const { state } = useRootStore();
   // Memoize the specific app state slice
-  return React.useMemo(() => state.app, [state.app]);
+  return state.app;
 };
 
 export const useAppDispatch = () => {
@@ -34,7 +34,7 @@ export const useAppDispatch = () => {
 export const useGameState = () => {
   const { state } = useRootStore();
   // Memoize the specific game state slice
-  return React.useMemo(() => state.game, [state.game]);
+  return state.game;
 };
 
 export const useGameDispatch = () => {
@@ -59,19 +59,3 @@ export const useGameContext = () => {
   return React.useMemo(() => ({ state, dispatch }), [state, dispatch]);
 };
 
-// Advanced selectors with proper dependencies
-export const useGameLevel = () => {
-  const { state } = useRootStore();
-  return React.useMemo(() => state.app.gameLevel, [state.app.gameLevel]);
-};
-
-export const useGameProgress = () => {
-  const { state } = useRootStore();
-  return React.useMemo(() => state.app.gameProgress, [state.app.gameProgress]);
-};
-
-// Add a specific hook for image assets to ensure updates are detected
-export const useImageAssets = () => {
-  const { state } = useRootStore();
-  return React.useMemo(() => state.app.imageAssets, [state.app.imageAssets]);
-};

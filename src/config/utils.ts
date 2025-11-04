@@ -1,5 +1,16 @@
-import { createCacheKey, getCachedResponse, MANIFEST_KEY, setCachedResponse } from "./cache.utils";
-import type { MCAppPreRenderedImgAsset, MCGameCardDeck, MCGameMaxAvailableCards, MCGameProgress } from "./types";
+import {
+  createCacheKey,
+  getCachedResponse,
+  MANIFEST_KEY,
+  setCachedResponse,
+} from "./cache.utils";
+import type {
+  MCAppPreRenderedImgAsset,
+  MCGameCard,
+  MCGameCardDeck,
+  MCGameMaxAvailableCards,
+  MCGameProgress,
+} from "./types";
 
 export function callAll<T extends unknown>(
   ...fns: Array<((...args: T[]) => void) | undefined>
@@ -37,6 +48,16 @@ export function shuffleDeck<T extends unknown[]>(cardDeck: T): T {
     [cardDeck[i], cardDeck[j]] = [cardDeck[j], cardDeck[i]];
   }
   return cardDeck as T;
+}
+
+// Generate a signature for the current card deck state
+export function getDeckSignature(deck: MCGameCard[]) {
+  return deck
+    .map(
+      ({ uid, isMatched, isHidden }) =>
+        `${uid}:${Number(isMatched)}:${Number(isHidden)}`
+    )
+    .join("|");
 }
 
 function determineCardListMatches(cardDeck: MCGameCardDeck): boolean {
@@ -135,7 +156,9 @@ export const cacheManifest = async (
 };
 
 // Asset loading functions
-export const loadCachedManifest = async (): Promise<MCAppPreRenderedImgAsset[] | null> => {
+export const loadCachedManifest = async (): Promise<
+  MCAppPreRenderedImgAsset[] | null
+> => {
   try {
     const manifestResponse = await getCachedResponse(MANIFEST_KEY);
     if (!manifestResponse) return null;
@@ -171,7 +194,9 @@ export const convertCachedAssetToBlobUrl = async (
   }
 };
 
-export const loadCachedAssets = async (): Promise<MCAppPreRenderedImgAsset[]> => {
+export const loadCachedAssets = async (): Promise<
+  MCAppPreRenderedImgAsset[]
+> => {
   try {
     const cachedManifest = await loadCachedManifest();
     if (!cachedManifest) return [];
@@ -179,9 +204,7 @@ export const loadCachedAssets = async (): Promise<MCAppPreRenderedImgAsset[]> =>
     const assetPromises = cachedManifest.map(convertCachedAssetToBlobUrl);
     const results = await Promise.all(assetPromises);
 
-    const validAssets = results.filter(
-      Boolean
-    ) as MCAppPreRenderedImgAsset[];
+    const validAssets = results.filter(Boolean) as MCAppPreRenderedImgAsset[];
 
     if (validAssets.length === cachedManifest.length) {
       return validAssets;
@@ -195,7 +218,9 @@ export const loadCachedAssets = async (): Promise<MCAppPreRenderedImgAsset[]> =>
   }
 };
 
-export const loadFreshAssets = async (): Promise<MCAppPreRenderedImgAsset[]> => {
+export const loadFreshAssets = async (): Promise<
+  MCAppPreRenderedImgAsset[]
+> => {
   const assets = getAssetMetadata();
 
   if (assets.length > 0) {
@@ -222,24 +247,26 @@ export const loadAssets = async (): Promise<MCAppPreRenderedImgAsset[]> => {
 };
 
 // Load individual asset with cache fallback
-export const getCardSourceFromCache = async (name: string): Promise<string | null> => {
+export const getCardSourceFromCache = async (
+  name: string
+): Promise<string | null> => {
   try {
     const cacheKey = createCacheKey(`${name}.png`); // Adjust filename as needed
     const cachedResponse = await getCachedResponse(cacheKey);
-    
+
     if (cachedResponse) {
       const blob = await cachedResponse.blob();
       return URL.createObjectURL(blob);
     }
-    
-    // Fallback to Vite glob
+
+    // Fallback to asset metadata lookup
     return getCardSrc(name);
   } catch (error) {
-    console.error('Failed to get card from cache:', error);
-    
-    // Final fallback to Vite glob
+    console.error("Failed to get card from cache:", error);
+
+    // Final fallback to asset metadata lookup
     const assets = getAssetMetadata();
-    const coverAsset = assets.find(asset => asset.imgId === 'cover_card');
+    const coverAsset = assets.find((asset) => asset.imgId === "cover_card");
     return coverAsset?.src || null;
   }
 };
@@ -247,6 +274,6 @@ export const getCardSourceFromCache = async (name: string): Promise<string | nul
 // Fallback to Vite glob import
 export const getCardSrc = (name: string): string | null => {
   const assets = getAssetMetadata();
-  const coverAsset = assets.find(asset => asset.imgId === name);
+  const coverAsset = assets.find((asset) => asset.imgId === name);
   return coverAsset?.src || null;
 };

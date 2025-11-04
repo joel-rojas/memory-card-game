@@ -10,6 +10,7 @@ import {
   type MCGameUIPropsList,
   type MCGameUISetPropsMap,
   determineGameProgress,
+  getDeckSignature,
 } from "@/config";
 import {
   MCActionType,
@@ -189,15 +190,6 @@ const useGameSetup = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown, gameStatus, gameProgress]);
-
-  // Generate a signature for the current card deck state
-  const getDeckSignature = (deck: MCGameCard[]) =>
-    deck
-      .map(
-        ({ uid, isMatched, isHidden }) =>
-          `${uid}:${Number(isMatched)}:${Number(isHidden)}`
-      )
-      .join("|");
 
   // Check game progress on every shown card and countdown value change
   React.useEffect(() => {
