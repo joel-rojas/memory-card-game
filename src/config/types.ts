@@ -151,7 +151,6 @@ export type MCGameStartGameMenuKeys = "startGame" | "about";
 
 export type MCGamePlayMenuKeys = "backToStart" | "gameLevel" | "play";
 
-
 export type MCAppAnimatedCardLayoutItemStatus = "entering" | "exiting";
 
 export type MCAppAnimatedCardLayoutItem = {

@@ -4,7 +4,6 @@ const STATIC_FILES = [
   "/favicon.ico",
   "/manifest.json",
   "/src/index.css",
-  "/src/main.tsx",
   "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap",
 ];
 

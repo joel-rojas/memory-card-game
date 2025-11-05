@@ -196,8 +196,9 @@ const useGameSetup = () => {
     const prev = prevProgressCheck.current;
     const currentSignature = getDeckSignature(cardDeck);
 
-    if (prev.signature === currentSignature && prev.countdown === countdown)
+    if (prev.signature === currentSignature && prev.countdown === countdown) {
       return;
+    }
 
     const nextProgress = determineGameProgress(
       appState.gameProgress,

@@ -32,13 +32,23 @@ function generateDeck<T extends MCGameCardDeck>(
   while (i < MAX_CARDS) {
     const id = randomList[i];
     const uid = `${id}_${++count}`;
+    const cardAsset = imgAssets.find((asset) => asset.imgId.startsWith(id));
+    if (!cardAsset) {
+      throw new Error(`Card asset with id ${id} not found in imgAssets.`);
+    }
     const newItem = {
       id,
       uid,
-      coverCardSrc: imgAssets.find((asset) =>
-        asset.imgId.startsWith("cover_card")
-      )!.src,
-      src: imgAssets.find((asset) => asset.imgId.startsWith(id))!.src,
+      coverCardSrc: (() => {
+        const coverAsset = imgAssets.find((asset) =>
+          asset.imgId.startsWith("cover_card")
+        );
+        if (!coverAsset) {
+          throw new Error("Cover card asset not found in imgAssets.");
+        }
+        return coverAsset.src;
+      })(),
+      src: cardAsset.src,
       isMatched: false,
       isHidden: true,
     };

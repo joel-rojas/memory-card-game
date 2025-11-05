@@ -11,26 +11,27 @@ interface GuardRouteProps {
   errorComponent?: ReactNode;
 }
 
-const GuardRoute = ({ 
-  children, 
-  isPageAllowed, 
+const GuardRoute = ({
+  children,
+  isPageAllowed,
   isLoading = false,
   error = null,
   fallbackPath = "/",
   loadingComponent,
-  errorComponent
+  errorComponent,
 }: GuardRouteProps) => {
   if (isLoading) {
     return loadingComponent || <div>Loading...</div>;
   }
 
   if (error) {
-    return errorComponent || (
-      <div>
-        <h2>Error</h2>
-        <p>{typeof error === 'string' ? error : error.message}</p>
-        <Navigate to={fallbackPath} replace />
-      </div>
+    return (
+      errorComponent || (
+        <div>
+          <h2>Error</h2>
+          <p>{typeof error === "string" ? error : error.message}</p>
+        </div>
+      )
     );
   }
 

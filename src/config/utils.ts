@@ -87,7 +87,7 @@ export const determineGameProgress = (
     return status;
   }
   return "idle";
-}
+};
 
 function loadAssetModule() {
   return import.meta.glob("@/assets/**/*.{png,jpg,jpeg,svg}", {
