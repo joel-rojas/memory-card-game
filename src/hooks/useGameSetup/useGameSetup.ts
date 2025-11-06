@@ -19,11 +19,6 @@ import {
   useGameContext,
 } from "@/store";
 
-type MCGameProgressCheckSignature = {
-  signature: string;
-  countdown: number;
-};
-
 const useGameSetup = () => {
   const navigate = useNavigate();
   const { state: gameState, dispatch: gameDispatch } = useGameContext();
@@ -35,11 +30,13 @@ const useGameSetup = () => {
   const { gameStatus, gameLevel, gameProgress, imageAssets } = appState;
   const { cardDeck } = gameState;
   const [countdown, setCountdown] = React.useState<number>(gameLevel.countdown);
-  const prevProgressCheck = React.useRef<MCGameProgressCheckSignature>({
-    signature: "",
-    countdown: gameLevel.countdown,
-  });
   const MAX_CARDS_SHOWN_PER_TURN = 2;
+
+  // Create a custom deck signature memoized value to track changes only when card states change
+  const deckSignature = React.useMemo(
+    () => getDeckSignature(cardDeck),
+    [cardDeck]
+  );
 
   const handleCardOnClick = React.useCallback(
     (
@@ -193,13 +190,6 @@ const useGameSetup = () => {
 
   // Check game progress on every shown card and countdown value change
   React.useEffect(() => {
-    const prev = prevProgressCheck.current;
-    const currentSignature = getDeckSignature(cardDeck);
-
-    if (prev.signature === currentSignature && prev.countdown === countdown) {
-      return;
-    }
-
     const nextProgress = determineGameProgress(
       appState.gameProgress,
       cardDeck,
@@ -211,9 +201,7 @@ const useGameSetup = () => {
         payload: { cardDeck, countdown },
       });
     }
-
-    prevProgressCheck.current = { signature: currentSignature, countdown };
-  }, [cardDeck, countdown, appState.gameProgress, appDispatch]);
+  }, [cardDeck, countdown, appState.gameProgress, deckSignature, appDispatch]);
 
   // Check if a pair of cards shown are matched with buffer time
   React.useEffect(() => {

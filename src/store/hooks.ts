@@ -21,7 +21,6 @@ export const useSelector = <T>(selector: (state: RootState) => T) => {
 // Specific selectors for app state with proper memoization
 export const useAppState = () => {
   const { state } = useRootStore();
-  // Memoize the specific app state slice
   return state.app;
 };
 
@@ -33,7 +32,6 @@ export const useAppDispatch = () => {
 // Specific selectors for game state with proper memoization
 export const useGameState = () => {
   const { state } = useRootStore();
-  // Memoize the specific game state slice
   return state.game;
 };
 

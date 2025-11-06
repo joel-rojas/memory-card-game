@@ -3,27 +3,40 @@ export const CACHE_NAME = "memory-game-assets-v1";
 export const MANIFEST_KEY = "/assets-manifest";
 
 // Pure functions for cache operations
-export const createCacheKey = (fileName: string): string => `/assets/${fileName}`;
+export const createCacheKey = (fileName: string): string =>
+  `/assets/${fileName}`;
 
-export const isCacheSupported = (): boolean => 
-  'caches' in window && 'serviceWorker' in navigator;
+export const isCacheSupported = (): boolean => {
+  // Check for caches API in both window and service worker contexts
+  if (typeof window !== "undefined") {
+    return "caches" in window && "serviceWorker" in navigator;
+  } else if (typeof self !== "undefined") {
+    return "caches" in self;
+  }
+  return false;
+};
 
-export const openCache = async (): Promise<Cache> => 
+export const openCache = async (): Promise<Cache> =>
   await caches.open(CACHE_NAME);
 
 // Cache operations
-export const getCachedResponse = async (key: string): Promise<Response | null> => {
+export const getCachedResponse = async (
+  key: string
+): Promise<Response | null> => {
   try {
     if (!isCacheSupported()) return null;
     const cache = await openCache();
-    return await cache.match(key) || null;
+    return (await cache.match(key)) || null;
   } catch (error) {
     console.error(`Failed to get cached response for ${key}:`, error);
     return null;
   }
 };
 
-export const setCachedResponse = async (key: string, response: Response): Promise<void> => {
+export const setCachedResponse = async (
+  key: string,
+  response: Response
+): Promise<void> => {
   try {
     if (!isCacheSupported()) return;
     const cache = await openCache();
