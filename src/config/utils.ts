@@ -145,8 +145,8 @@ export const cacheAsset = async (
 export const cacheAssets = async (
   assets: MCAppPreRenderedImgAsset[]
 ): Promise<void> => {
-  // Cache manifest and all assets in parallel
-  await Promise.all([cacheManifest(assets), ...assets.map(cacheAsset)]);
+  const updatedAssets = await Promise.all(assets.map(cacheAsset));
+  await cacheManifest(updatedAssets as MCAppPreRenderedImgAsset[]);
 };
 
 export const cacheManifest = async (
