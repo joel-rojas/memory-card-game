@@ -8,6 +8,7 @@ describe("Card Component", () => {
     card: {
       id: "a",
       src: "card-a.png",
+      coverCardSrc: "cover_card.png",
       uid: "1a",
       isMatched: false,
       isHidden: true,

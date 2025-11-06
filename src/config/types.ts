@@ -16,6 +16,7 @@ export type MCGameCard = {
   id: string;
   uid: string;
   src: string;
+  coverCardSrc: string;
   isHidden: boolean;
   isMatched: boolean;
 };
@@ -23,6 +24,8 @@ export type MCGameCard = {
 export type MCAppPreRenderedImgAsset = {
   src: string;
   imgId: string;
+  fileName?: string;
+  originalPath?: string;
 };
 
 export type MCGameCardDeck = MCGameCard[];
@@ -158,3 +161,13 @@ export type MCAppAnimatedCardLayoutItem = {
 export type MCAppAnimatedCardLayout = {
   items: MCAppAnimatedCardLayoutItem[];
 };
+
+export type PartialAppState = Pick<
+  MCAppState,
+  "gameLevel" | "gameProgress" | "gameStatus"
+> & { hasLoadedAssets?: boolean };
+
+export type AppStateFromSessionStorage = [
+  PartialAppState | null,
+  React.Dispatch<React.SetStateAction<PartialAppState | null>>
+];

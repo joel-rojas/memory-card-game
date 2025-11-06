@@ -3,12 +3,12 @@ import {
   type MCAppAction,
   type MCAppActionCustomPayload,
 } from "@/store";
-import type {
-  MCAppState,
-  MCGameCardDeck,
-  MCGameLevel,
-  MCGameProgress,
-  MCAppPreRenderedImgAsset,
+import {
+  type MCAppState,
+  type MCGameLevel,
+  type MCGameProgress,
+  type MCAppPreRenderedImgAsset,
+  determineGameProgress,
 } from "@/config";
 
 export const appInitialState: MCAppState = {
@@ -18,34 +18,6 @@ export const appInitialState: MCAppState = {
   imageAssets: [],
 };
 
-function determineCardListMatches(cardDeck: MCGameCardDeck): boolean {
-  if (cardDeck.length === 0) return false;
-  return cardDeck.every((card) => card.isMatched);
-}
-
-function determineGameProgress(
-  status: MCGameProgress,
-  cardDeck: MCGameCardDeck,
-  currentCountdown: number
-): MCGameProgress {
-  const allCardsMatched = determineCardListMatches(cardDeck);
-  if (status === "idle" && !allCardsMatched && currentCountdown > 0) {
-    return "inProgress";
-  }
-  if (status === "inProgress") {
-    if (currentCountdown > 0 && allCardsMatched) {
-      return "win";
-    }
-    if (currentCountdown <= 0 && !allCardsMatched) {
-      return "lose";
-    }
-    return "inProgress";
-  }
-  if (status === "win" || status === "lose") {
-    return status;
-  }
-  return "idle";
-}
 
 export function appReducer(state: MCAppState, action: MCAppAction): MCAppState {
   switch (action.type) {

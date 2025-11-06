@@ -2,9 +2,9 @@ import React from "react";
 
 import { useSessionStorage } from "@/hooks";
 import { appInitialState } from "./app-store";
-import type { MCAppState } from "@/config";
+import type { MCAppState, PartialAppState } from "@/config";
 import { initialState, rootReducer } from "./root.reducer";
-import { RootContext } from './root.context';
+import { RootContext } from "./root.context";
 
 const RootProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const { gameLevel, gameProgress, gameStatus, imageAssets } = appInitialState;
@@ -12,15 +12,20 @@ const RootProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     gameLevel,
     gameProgress,
     gameStatus,
-  }) as unknown as [
-    Pick<MCAppState, "gameLevel" | "gameProgress" | "gameStatus">
-  ];
+    hasLoadedAssets: false,
+  } as PartialAppState);
   const [state, dispatch] = React.useReducer(rootReducer, {
     ...initialState,
     app: {
-      ...appStateStorage,
+      ...appInitialState,
+      ...(appStateStorage && {
+        gameLevel: appStateStorage.gameLevel ?? appInitialState.gameLevel,
+        gameProgress:
+          appStateStorage.gameProgress ?? appInitialState.gameProgress,
+        gameStatus: appStateStorage.gameStatus ?? appInitialState.gameStatus,
+      }),
       imageAssets,
-    },
+    } as MCAppState,
   });
 
   const contextValue = React.useMemo(
