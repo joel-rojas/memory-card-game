@@ -124,26 +124,29 @@ export const fetchAsset = async (url: string): Promise<Response> => {
 // Asset caching functions
 export const cacheAsset = async (
   asset: MCAppPreRenderedImgAsset
-): Promise<boolean> => {
+): Promise<MCAppPreRenderedImgAsset | null> => {
   try {
-    if (!asset.fileName) return false;
+    if (!asset.fileName) return null;
 
     const cacheKey = createCacheKey(asset.fileName);
     const response = await fetchAsset(asset.src);
     await setCachedResponse(cacheKey, response);
 
-    return true;
+    return {
+      ...asset,
+      src: response.url,
+    };
   } catch (error) {
     console.warn(`Failed to cache asset ${asset.fileName}:`, error);
-    return false;
+    return null;
   }
 };
 
 export const cacheAssets = async (
   assets: MCAppPreRenderedImgAsset[]
 ): Promise<void> => {
-  // Cache the manifest
-  await cacheManifest(assets);
+  const updatedAssets = await Promise.all(assets.map(cacheAsset));
+  await cacheManifest(updatedAssets as MCAppPreRenderedImgAsset[]);
 };
 
 export const cacheManifest = async (
