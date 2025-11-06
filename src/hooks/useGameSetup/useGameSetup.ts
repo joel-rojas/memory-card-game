@@ -201,7 +201,7 @@ const useGameSetup = () => {
         payload: { cardDeck, countdown },
       });
     }
-  }, [cardDeck, countdown, appState.gameProgress, deckSignature, appDispatch]);
+  }, [countdown, appState.gameProgress, deckSignature, appDispatch]);
 
   // Check if a pair of cards shown are matched with buffer time
   React.useEffect(() => {
