@@ -1,0 +1,58 @@
+import * as React from "react";
+import {
+  loadAssets,
+  type AppStateFromSessionStorage,
+  type PartialAppState,
+} from "@/config";
+import { MCActionType, useAppContext } from "@/store";
+import useSessionStorage from "../useSessionStorage";
+
+const useAssetLoader = () => {
+  const { state: appState, dispatch: appDispatch } = useAppContext();
+  const [appStorage, setAppStorage] = useSessionStorage(
+    "appState"
+  ) as AppStateFromSessionStorage;
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  // Asset loading effect
+  React.useEffect(() => {
+    if (appState.imageAssets.length > 0 && appStorage?.hasLoadedAssets) return;
+
+    const persistAssets = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const assets = await loadAssets();
+
+        if (assets.length > 0) {
+          appDispatch({ type: MCActionType.LOAD_ASSETS, payload: assets });
+          setAppStorage({
+            ...(appStorage as PartialAppState),
+            hasLoadedAssets: true,
+          });
+        } else {
+          throw new Error("No assets found");
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error";
+        setError(errorMessage);
+        console.error("Error loading assets:", err);
+        setAppStorage({
+          ...(appStorage as PartialAppState),
+          hasLoadedAssets: appStorage?.hasLoadedAssets ?? false,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    persistAssets();
+  }, [appStorage, appState.imageAssets.length]);
+
+  return { isLoading, error };
+};
+
+export default useAssetLoader;

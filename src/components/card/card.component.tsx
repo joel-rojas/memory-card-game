@@ -1,7 +1,6 @@
 import React from "react";
 
 import type { MCGameCard } from "@/config";
-import { getImageByName } from "@/config/utils";
 
 interface CardProps {
   card: MCGameCard;
@@ -28,13 +27,12 @@ const Card: React.FC<CardProps> = ({
   card,
   onTap,
 }: CardProps): React.ReactElement => {
-  const { isHidden } = card;
-  const coverCardSrc = getImageByName("cover_card");
+  const { isHidden } = card;  
 
   return (
     <div
       data-testid={`card-${card.uid}`}
-      className={`w-16 sm:w-28 md:w-36 lg:w-48 h-16 sm:h-28 md:h-36 lg:h-48 ${
+      className={`w-16 sm:w-28 md:w-36 lg:w-44 h-16 sm:h-28 md:h-36 lg:h-44 ${
         isHidden ? "bg-card-slateblue" : "shadow shadow-gray-400"
       } relative rounded-sm cursor-pointer `}
       onClick={(ev) => onTap(ev, card)}
@@ -44,7 +42,7 @@ const Card: React.FC<CardProps> = ({
           isHidden ? "visible" : "invisible"
         }`}
         alt={`cover card`}
-        src={coverCardSrc!}
+        src={card.coverCardSrc}
       />
       <img
         className={`p-1 absolute select-none pointer-events-none ${

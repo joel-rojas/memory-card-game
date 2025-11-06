@@ -9,6 +9,8 @@ import {
   MCGameRoutePath,
   type MCGameUIPropsList,
   type MCGameUISetPropsMap,
+  determineGameProgress,
+  getDeckSignature,
 } from "@/config";
 import {
   MCActionType,
@@ -29,6 +31,12 @@ const useGameSetup = () => {
   const { cardDeck } = gameState;
   const [countdown, setCountdown] = React.useState<number>(gameLevel.countdown);
   const MAX_CARDS_SHOWN_PER_TURN = 2;
+
+  // Create a custom deck signature memoized value to track changes only when card states change
+  const deckSignature = React.useMemo(
+    () => getDeckSignature(cardDeck),
+    [cardDeck]
+  );
 
   const handleCardOnClick = React.useCallback(
     (
@@ -182,14 +190,18 @@ const useGameSetup = () => {
 
   // Check game progress on every shown card and countdown value change
   React.useEffect(() => {
-    if (countdown >= 0) {
+    const nextProgress = determineGameProgress(
+      appState.gameProgress,
+      cardDeck,
+      countdown
+    );
+    if (nextProgress !== appState.gameProgress) {
       appDispatch({
         type: MCActionType.CHANGE_PROGRESS,
         payload: { cardDeck, countdown },
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDeck, countdown]);
+  }, [countdown, appState.gameProgress, deckSignature, appDispatch]);
 
   // Check if a pair of cards shown are matched with buffer time
   React.useEffect(() => {

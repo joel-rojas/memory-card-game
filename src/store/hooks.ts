@@ -11,16 +11,17 @@ export const useRootStore = () => {
   return context;
 };
 
-// Generic selector hook
+// Fixed selector hook - remove unnecessary memoization
 export const useSelector = <T>(selector: (state: RootState) => T) => {
   const { state } = useRootStore();
-  const memoizedState = React.useMemo(() => state, [state]);
-  return selector(memoizedState);
+  // Remove the problematic memoization - let the selector handle its own memoization
+  return selector(state);
 };
 
-// Specific selectors for app state
+// Specific selectors for app state with proper memoization
 export const useAppState = () => {
-  return useSelector((state) => state.app);
+  const { state } = useRootStore();
+  return state.app;
 };
 
 export const useAppDispatch = () => {
@@ -28,9 +29,10 @@ export const useAppDispatch = () => {
   return dispatch;
 };
 
-// Specific selectors for game state
+// Specific selectors for game state with proper memoization
 export const useGameState = () => {
-  return useSelector((state) => state.game);
+  const { state } = useRootStore();
+  return state.game;
 };
 
 export const useGameDispatch = () => {
@@ -40,23 +42,18 @@ export const useGameDispatch = () => {
 
 // Combined app hook (maintains similar API to your original useAppContext)
 export const useAppContext = () => {
-  const state = useAppState();
-  const dispatch = useAppDispatch();
-  return { state, dispatch };
+  const { state, dispatch } = useRootStore();
+
+  // Memoize the returned object to prevent unnecessary re-renders
+  return React.useMemo(() => ({ state: state.app, dispatch }), [state.app, dispatch]);
 };
 
 // Combined game hook (maintains similar API to your original useGameContext)
 export const useGameContext = () => {
   const state = useGameState();
   const dispatch = useGameDispatch();
-  return { state, dispatch };
+
+  // Memoize the returned object to prevent unnecessary re-renders
+  return React.useMemo(() => ({ state, dispatch }), [state, dispatch]);
 };
 
-// Advanced selectors
-export const useGameLevel = () => {
-  return useSelector((state) => state.app.gameLevel);
-};
-
-export const useGameProgress = () => {
-  return useSelector((state) => state.app.gameProgress);
-};
