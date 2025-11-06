@@ -139,9 +139,7 @@ export type MCGameMenuKeys =
   | MCGameStartGameMenuKeys
   | MCGamePlayMenuKeys;
 
-export type MCGameMainMenuContentKeys =
-  | "startGameMenu"
-  | "gameLevelMenu";
+export type MCGameMainMenuContentKeys = "startGameMenu" | "gameLevelMenu";
 
 export type MCGameProgressiveMenuKeys =
   | MCGameStartGameMenuKeys

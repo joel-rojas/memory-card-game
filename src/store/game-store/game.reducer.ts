@@ -22,6 +22,18 @@ export const gameInitialState: MCGameState = {
 
 const MAX_CARDS: MCGameMaxCardsInDeck = 10;
 
+function getCoverCardSrcFromAssets(
+  imgAssets: MCAppPreRenderedImgAsset[]
+): string {
+  const coverAsset = imgAssets.find((asset) =>
+    asset.imgId.startsWith("cover_card")
+  );
+  if (!coverAsset) {
+    throw new Error("Cover card asset not found in imgAssets.");
+  }
+  return coverAsset.src;
+}
+
 function generateDeck<T extends MCGameCardDeck>(
   imgAssets: MCAppPreRenderedImgAsset[]
 ): T {
@@ -29,6 +41,7 @@ function generateDeck<T extends MCGameCardDeck>(
   const list: MCGameCardDeck = [];
   let i = 0;
   let count = 0;
+  const coverCardSrc = getCoverCardSrcFromAssets(imgAssets);
   while (i < MAX_CARDS) {
     const id = randomList[i];
     const uid = `${id}_${++count}`;
@@ -39,15 +52,7 @@ function generateDeck<T extends MCGameCardDeck>(
     const newItem = {
       id,
       uid,
-      coverCardSrc: (() => {
-        const coverAsset = imgAssets.find((asset) =>
-          asset.imgId.startsWith("cover_card")
-        );
-        if (!coverAsset) {
-          throw new Error("Cover card asset not found in imgAssets.");
-        }
-        return coverAsset.src;
-      })(),
+      coverCardSrc,
       src: cardAsset.src,
       isMatched: false,
       isHidden: true,
