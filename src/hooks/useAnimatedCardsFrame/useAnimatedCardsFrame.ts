@@ -78,13 +78,16 @@ const useAnimatedCardsFrame = (cardDeck: MCAppPreRenderedImgAsset[]) => {
    * @constant {number} MAX_ITEMS - The maximum number of items
    */
   const MAX_ITEMS = React.useMemo(() => {
+    let MAX_ITEMS_PER_SCREEN = 1;
     if (screenDimensions.type === "desktop") {
-      return 5;
+      MAX_ITEMS_PER_SCREEN = 5;
+      return MAX_ITEMS_PER_SCREEN;
     }
     if (screenDimensions.type === "tablet") {
-      return 3;
+      MAX_ITEMS_PER_SCREEN = 3;
+      return MAX_ITEMS_PER_SCREEN;
     }
-    return 1;
+    return MAX_ITEMS_PER_SCREEN;
   }, [screenDimensions]);
 
   // Initialize the layout

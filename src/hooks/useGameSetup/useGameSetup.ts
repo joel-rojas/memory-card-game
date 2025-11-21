@@ -38,6 +38,16 @@ const useGameSetup = () => {
     [cardDeck]
   );
 
+  // Optimistic UI update for card reveal
+  const [optimisticCards, addOptimisticCard] = React.useOptimistic(
+    cardDeck,
+    (state, newCard: MCGameCard) => {
+      return state.map((c) =>
+        c.uid === newCard.uid ? { ...c, isHidden: false } : c
+      );
+    }
+  );
+
   const handleCardOnClick = React.useCallback(
     (
       _: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -47,6 +57,7 @@ const useGameSetup = () => {
         gameState.cardsShown.counter < MAX_CARDS_SHOWN_PER_TURN &&
         !card.isMatched
       ) {
+        addOptimisticCard(card);
         gameDispatch({
           type: MCGameActionType.SHOW_CARD,
           payload: card,
@@ -218,7 +229,10 @@ const useGameSetup = () => {
   }, [gameState.cardsShown.counter]);
 
   return {
-    state: gameState,
+    state: {
+      ...gameState,
+      cardDeck: optimisticCards,
+    },
     countdown,
     showGameModal,
     getModalContentProps,
